@@ -16,12 +16,14 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-  "embed"
+  
   "flasher/config"
 )
 
+import _ "embed"
+
 //go:embed ui/admin.html
-var adminHTML []byte
+var adminHTML string
  
 
 type FirmwareInfo struct {
@@ -59,7 +61,13 @@ func encryptAndSign(fw []byte, cfg *config.Config) ([]byte, error) {
 	return result, nil
 }
 
-func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+
+func listFirmwares(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		// cfg доступен здесь (захвачен из внешней функции)
+		fmt.Println(cfg.FirmwaresDir)
+//func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	w.Header().Set("Content-Type", "application/json")
 	entries, err := os.ReadDir(cfg.FirmwaresDir)
 	if err != nil {
@@ -83,9 +91,11 @@ func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 		list = []FirmwareInfo{}
 	}
 	json.NewEncoder(w).Encode(list)
+ }
 }
 
-func downloadFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+func downloadFirmware (cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) { // (w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	id := strings.TrimPrefix(r.URL.Path, "/api/firmwares/")
 	id = strings.Trim(id, "/")
 	if id == "" || strings.Contains(id, "..") {
@@ -94,14 +104,18 @@ func downloadFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config
 	}
 	path := filepath.Join( cfg.FirmwaresDir, filepath.Base(id+".enc"))
 	http.ServeFile(w, r, path)
+ }
 }
 
-func deleteFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+func deleteFirmware (cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) { // (w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", 405)
 		return
 	}
 	token := r.Header.Get("X-Admin-Token")
+
+  fmt.Println("X-Admin-Token:", token)
 	//adminToken := os.Getenv("ADMIN_TOKEN")
   adminToken := cfg.AdminToken
 	if adminToken == "" || token != adminToken {
@@ -123,9 +137,11 @@ func deleteFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config) 
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
+ }
 }
 
-func uploadFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+func uploadFirmware (cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) { //(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", 405)
 		return
@@ -178,6 +194,7 @@ func uploadFirmware(w http.ResponseWriter, r *http.Request, cfg *config.Config) 
 		"file": encName,
 		"size": len(encrypted),
 	})
+ }
 }
 
 func adminPage(w http.ResponseWriter, r *http.Request) {
@@ -186,12 +203,13 @@ func adminPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+  fmt.Println("BUILD MARKER: 2026-07-03-NEW")
  
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	os.MkdirAll( cfg.FirmwaresDir, 0755)
 
@@ -201,8 +219,10 @@ func main() {
 	http.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
 	http.HandleFunc("/", adminPage)
 
-	fmt.Printf("IgnitionFlash Admin running on %s\n",  cfg.ListenAddr)
-	fmt.Printf("Set ADMIN_TOKEN environment variable before use\n")
+//fmt.Println(adminHTML)
+  fmt.Println("len:", len(adminHTML))
+fmt.Println("BUILD MARKER: 2026-07-03-NEW")
+	fmt.Printf("IgnitionFlash Admin running on %s\n",  cfg.ListenAddr) 
 	log.Fatal(http.ListenAndServe( cfg.ListenAddr, nil))
 }
 
