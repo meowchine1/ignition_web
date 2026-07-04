@@ -61,13 +61,11 @@ func encryptAndSign(fw []byte, cfg *config.Config) ([]byte, error) {
 	return result, nil
 }
 
-
+//func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 func listFirmwares(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		// cfg доступен здесь (захвачен из внешней функции)
-		fmt.Println(cfg.FirmwaresDir)
-//func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+		fmt.Println(cfg.FirmwaresDir) 
 	w.Header().Set("Content-Type", "application/json")
 	entries, err := os.ReadDir(cfg.FirmwaresDir)
 	if err != nil {
@@ -211,19 +209,38 @@ func main() {
 		log.Fatal(err)
 	}
 
-	os.MkdirAll( cfg.FirmwaresDir, 0755)
+  mux := http.NewServeMux()
 
-	http.HandleFunc("/api/firmwares", listFirmwares(cfg))
-	http.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
-	http.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
-	http.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
-	http.HandleFunc("/", adminPage)
+  // STATIC
+  mux.Handle("/css/",
+      http.StripPrefix("/css/",
+          http.FileServer(http.Dir("./ui/css")),
+      ),
+  )
 
-//fmt.Println(adminHTML)
-  fmt.Println("len:", len(adminHTML))
-fmt.Println("BUILD MARKER: 2026-07-03-NEW")
-	fmt.Printf("IgnitionFlash Admin running on %s\n",  cfg.ListenAddr) 
-	log.Fatal(http.ListenAndServe( cfg.ListenAddr, nil))
+  // API
+  mux.HandleFunc("/api/firmwares", listFirmwares(cfg))
+  mux.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
+  mux.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
+  mux.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
+
+  // HTML
+  mux.HandleFunc("/", adminPage)
+
+  log.Fatal(http.ListenAndServe(cfg.ListenAddr, mux))
+// 	os.MkdirAll( cfg.FirmwaresDir, 0755)
+
+// 	http.HandleFunc("/api/firmwares", listFirmwares(cfg))
+// 	http.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
+// 	http.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
+// 	http.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
+// 	http.HandleFunc("/", adminPage)
+
+// //fmt.Println(adminHTML)
+// //fmt.Println("len:", len(adminHTML))
+// //fmt.Println("BUILD MARKER: 2026-07-03-NEW")
+// 	fmt.Printf("IgnitionFlash Admin running on %s\n",  cfg.ListenAddr) 
+// 	log.Fatal(http.ListenAndServe( cfg.ListenAddr, nil))
 }
 
  
