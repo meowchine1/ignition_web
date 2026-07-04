@@ -19,11 +19,7 @@ import (
   
   "flasher/config"
 )
-
-import _ "embed"
-
-//go:embed ui/admin.html
-var adminHTML string
+ 
  
 
 type FirmwareInfo struct {
@@ -195,52 +191,54 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
  }
 }
 
-func adminPage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, adminHTML)
+func indexPage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	http.ServeFile(w, r, "./ui/index.html")
 }
 
-func main() {
+func adminPage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./ui/admin.html")
+}
+ func main() {
 
-  fmt.Println("BUILD MARKER: 2026-07-03-NEW")
- 
+	fmt.Println("BUILD MARKER: 2026-07-03-NEW")
+
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-  mux := http.NewServeMux()
+	// создаём папку ДО старта сервера
+	if err := os.MkdirAll(cfg.FirmwaresDir, 0755); err != nil {
+		log.Fatal(err)
+	}
 
-  // STATIC
-  mux.Handle("/css/",
-      http.StripPrefix("/css/",
-          http.FileServer(http.Dir("./ui/css")),
-      ),
-  )
+	mux := http.NewServeMux()
 
-  // API
-  mux.HandleFunc("/api/firmwares", listFirmwares(cfg))
-  mux.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
-  mux.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
-  mux.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
+	// STATIC
+	mux.Handle("/css/",
+		http.StripPrefix("/css/",
+			http.FileServer(http.Dir("./ui/css")),
+		),
+	)
 
-  // HTML
-  mux.HandleFunc("/", adminPage)
+	// API
+	mux.HandleFunc("/api/firmwares", listFirmwares(cfg))
+	mux.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
+	mux.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
+	mux.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
 
-  log.Fatal(http.ListenAndServe(cfg.ListenAddr, mux))
-// 	os.MkdirAll( cfg.FirmwaresDir, 0755)
+	// HTML
+	mux.HandleFunc("/", indexPage)
+	mux.HandleFunc("/admin", adminPage)
 
-// 	http.HandleFunc("/api/firmwares", listFirmwares(cfg))
-// 	http.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
-// 	http.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
-// 	http.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
-// 	http.HandleFunc("/", adminPage)
+	fmt.Printf("IgnitionFlash Admin running on %s\n", cfg.ListenAddr)
 
-// //fmt.Println(adminHTML)
-// //fmt.Println("len:", len(adminHTML))
-// //fmt.Println("BUILD MARKER: 2026-07-03-NEW")
-// 	fmt.Printf("IgnitionFlash Admin running on %s\n",  cfg.ListenAddr) 
-// 	log.Fatal(http.ListenAndServe( cfg.ListenAddr, nil))
+	log.Fatal(http.ListenAndServe(cfg.ListenAddr, mux))
 }
 
  
