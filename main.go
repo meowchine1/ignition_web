@@ -12,11 +12,11 @@ import (
 	"io"
 	"log"
 	"net/http"
+  "html/template"
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
-  
+	"time" 
   "flasher/config"
 )
  
@@ -191,54 +191,75 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
  }
 }
 
-func indexPage(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.NotFound(w, r)
-		return
-	}
-
-	http.ServeFile(w, r, "./ui/index.html")
-}
-
-func adminPage(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./ui/admin.html")
-}
  func main() {
 
-	fmt.Println("BUILD MARKER: 2026-07-03-NEW")
+	fmt.Println("BUILD MARKER: 2026-07-05-NEW")
 
 	cfg, err := config.Load()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// создаём папку ДО старта сервера
 	if err := os.MkdirAll(cfg.FirmwaresDir, 0755); err != nil {
 		log.Fatal(err)
 	}
 
+	base := template.Must(template.ParseFiles(
+		"ui/templates/layout.html",
+		"ui/templates/header.html",
+	))
+
+	businessTmpl := template.Must(base.Clone())
+	template.Must(businessTmpl.ParseFiles("ui/pages/business.html"))
+
+	techTmpl := template.Must(base.Clone())
+	template.Must(techTmpl.ParseFiles("ui/pages/tech.html"))
+
+	adminTmpl := template.Must(base.Clone())
+	template.Must(adminTmpl.ParseFiles("ui/pages/admin.html"))
+
 	mux := http.NewServeMux()
 
-	// STATIC
+	// -------- STATIC --------
 	mux.Handle("/css/",
 		http.StripPrefix("/css/",
 			http.FileServer(http.Dir("./ui/css")),
 		),
 	)
 
-	// API
-	mux.HandleFunc("/api/firmwares", listFirmwares(cfg))
-	mux.HandleFunc("/api/firmwares/", downloadFirmware(cfg))
-	mux.HandleFunc("/api/admin/upload", uploadFirmware(cfg))
-	mux.HandleFunc("/api/admin/delete/", deleteFirmware(cfg))
+	// -------- ROUTES --------
 
-	// HTML
-	mux.HandleFunc("/", indexPage)
-	mux.HandleFunc("/admin", adminPage)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+
+		if err := businessTmpl.ExecuteTemplate(w, "layout", nil); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	mux.HandleFunc("/tech", func(w http.ResponseWriter, r *http.Request) {
+		if err := techTmpl.ExecuteTemplate(w, "layout", nil); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	mux.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) {
+		if err := adminTmpl.ExecuteTemplate(w, "layout", nil); err != nil {
+			log.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	// -------- START --------
 
 	fmt.Printf("IgnitionFlash Admin running on %s\n", cfg.ListenAddr)
 
 	log.Fatal(http.ListenAndServe(cfg.ListenAddr, mux))
 }
-
+ 
  

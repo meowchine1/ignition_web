@@ -1,47 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IgnitionFlash — Admin Panel</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/base.css">
+ 
+{{ define "styles" }}
 <link rel="stylesheet" href="css/admin.css"> 
+{{ end }}
 
-</head>
-<body>
+ {{ define "content" }}
 
-<div class="spark-line"></div>
-
-<header>
-  <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16" fill="#ff6b00"/>
-        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16" fill="url(#sg)" opacity=".6"/>
-        <defs>
-          <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ff3d00"/>
-            <stop offset="100%" stop-color="#ffaa00"/>
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
-    <div class="logo-text">
-      <div class="brand">Ignition<span>Flash</span></div>
-      <div class="sub">FIRMWARE MANAGEMENT SYSTEM</div>
-    </div>
-  </div>
-  <div class="header-right">
-    <div class="enc-badge">AES-128-CTR · HMAC-SHA256</div>
-    <div class="status-badge">
-      <span class="status-dot"></span>
-      SYSTEM ONLINE
-    </div>
-  </div>
-</header>
-
+ 
 <div class="container">
 
   <!-- Статы -->
@@ -328,5 +292,5 @@
     toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
   }
 </script>
-</body>
-</html>
+ 
+{{ end }}
