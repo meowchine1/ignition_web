@@ -38,7 +38,6 @@
   gap: 14px;
 }
 
-/* Buttons */
 .btn-primary {
   background: linear-gradient(90deg, var(--spark3), var(--spark2), var(--spark));
   color: #000;
@@ -72,7 +71,6 @@
   color: var(--spark);
 }
 
-/* Right side logo */
 .hero-right {
   flex: 1;
   display: flex;
@@ -89,7 +87,7 @@
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50%       { transform: translateY(-10px); }
 }
 
 /* =========================
@@ -201,26 +199,12 @@
     flex-direction: column;
     text-align: center;
   }
-
-  .hero-title {
-    font-size: 38px;
-  }
-
-  .features {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .workflow {
-    flex-direction: column;
-  }
+  .hero-title { font-size: 38px; }
+  .features { grid-template-columns: repeat(2, 1fr); }
+  .workflow { flex-direction: column; }
 }
 
 @media (max-width: 600px) {
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-title {
-    font-size: 30px;
-  }
+  .features { grid-template-columns: 1fr; }
+  .hero-title { font-size: 30px; }
 }

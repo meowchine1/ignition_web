@@ -1,339 +1,175 @@
-  :root {
-    --black:   #080a0c;
-    --dark:    #0d1014;
-    --panel:   #111418;
-    --card:    #161b20;
-    --border:  #1e262e;
-    --border2: #2a3540;
-    --spark:   #ff6b00;
-    --spark2:  #ffaa00;
-    --spark3:  #ff3d00;
-    --steel:   #8a9baa;
-    --text:    #cdd8e0;
-    --dim:     #4a5a68;
-    --success: #00c97a;
-    --danger:  #ff3b3b;
-  }
-    
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black:   #080a0c;
+  --dark:    #0d1014;
+  --panel:   #111418;
+  --card:    #161b20;
+  --border:  #1e262e;
+  --border2: #2a3540;
+  --spark:   #ff6b00;
+  --spark2:  #ffaa00;
+  --spark3:  #ff3d00;
+  --steel:   #8a9baa;
+  --text:    #cdd8e0;
+  --dim:     #4a5a68;
+  --success: #00c97a;
+  --danger:  #ff3b3b;
+}
 
-    body {
-    background: var(--black);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 15px;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Фоновый узор ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,107,0,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,107,0,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  
-  /* ── Верхняя полоса-искра ── */
-  .spark-line {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--spark3), var(--spark2), var(--spark), transparent);
-    position: relative;
-    animation: spark-pulse 3s ease-in-out infinite;
-  }
-  @keyframes spark-pulse {
-    0%, 100% { opacity: .6; }
-    50%       { opacity: 1; }
-  }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,107,0,.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,0,.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  /* ── Шапка ── */
-  header {
-    position: relative;
-    z-index: 1;
-    background: var(--dark);
-    border-bottom: 1px solid var(--border);
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,107,0,.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,0,.18) 1px, transparent 1px);
+  background-size: 200px 200px;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
+.spark-line {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--spark3), var(--spark2), var(--spark), transparent);
+  position: relative;
+  animation: spark-pulse 3s ease-in-out infinite;
+}
+@keyframes spark-pulse {
+  0%, 100% { opacity: .6; }
+  50%       { opacity: 1; }
+}
 
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    position: relative;
-  }
+header {
+  position: relative;
+  z-index: 1;
+  background: var(--dark);
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
 
-  /* SVG искра */
-  .logo-icon svg { width: 36px; height: 36px; }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-  }
+.logo-icon { width: 36px; height: 36px; position: relative; }
+.logo-icon svg { width: 36px; height: 36px; }
 
-  .logo-text .brand {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #fff;
-    text-transform: uppercase;
-  }
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
 
-  .logo-text .brand span {
-    color: var(--spark);
-  }
+.logo-text .brand {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  text-transform: uppercase;
+}
 
-  .logo-text .sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--dim);
-    letter-spacing: 2px;
-    margin-top: 3px;
-  }
+.logo-text .brand span { color: var(--spark); }
 
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
+.logo-text .sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
 
-  .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--dim);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
 
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-    animation: blink 2s ease-in-out infinite;
-  }
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  color: var(--dim);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: .4; }
-  }
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 2s ease-in-out infinite;
+}
 
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .4; }
+}
 
-    /* ── Главный контент ── */
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 40px 24px 60px;
-  }
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
 
-  /* ── Секция заголовок ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
+/* ── Section header с тремя ровными линиями ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  width: 100%;          /* растягивается на всю ширину контейнера */
+}
 
-  .section-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--spark);
-    text-transform: uppercase;
-  }
+.section-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--spark);
+  text-transform: uppercase;
+  white-space: nowrap;  /* текст не переносится — линии не скачут */
+  flex-shrink: 0;       /* текст не сжимается */
+}
 
-  .section-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--border2), transparent);
-  }  :root {
-    --black:   #080a0c;
-    --dark:    #0d1014;
-    --panel:   #111418;
-    --card:    #161b20;
-    --border:  #1e262e;
-    --border2: #2a3540;
-    --spark:   #ff6b00;
-    --spark2:  #ffaa00;
-    --spark3:  #ff3d00;
-    --steel:   #8a9baa;
-    --text:    #cdd8e0;
-    --dim:     #4a5a68;
-    --success: #00c97a;
-    --danger:  #ff3b3b;
-  }
-    
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+.section-line {
+  flex: 1;              /* занимает всё оставшееся пространство */
+  min-width: 0;         /* позволяет flex-элементу сжиматься корректно */
+  height: 1px;
+  background: linear-gradient(90deg, var(--border2), transparent);
+  display: block;       /* убираем inline-артефакты */
+}
 
-    body {
-    background: var(--black);
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 15px;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-    /* ── Фоновый узор ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,107,0,.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,107,0,.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  
-  /* ── Верхняя полоса-искра ── */
-  .spark-line {
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--spark3), var(--spark2), var(--spark), transparent);
-    position: relative;
-    animation: spark-pulse 3s ease-in-out infinite;
-  }
-  @keyframes spark-pulse {
-    0%, 100% { opacity: .6; }
-    50%       { opacity: 1; }
-  }
-
-  /* ── Шапка ── */
-  header {
-    position: relative;
-    z-index: 1;
-    background: var(--dark);
-    border-bottom: 1px solid var(--border);
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    position: relative;
-  }
-
-  /* SVG искра */
-  .logo-icon svg { width: 36px; height: 36px; }
-
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-  }
-
-  .logo-text .brand {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #fff;
-    text-transform: uppercase;
-  }
-
-  .logo-text .brand span {
-    color: var(--spark);
-  }
-
-  .logo-text .sub {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
-    color: var(--dim);
-    letter-spacing: 2px;
-    margin-top: 3px;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .status-badge {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    color: var(--dim);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--success);
-    box-shadow: 0 0 8px var(--success);
-    animation: blink 2s ease-in-out infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50%       { opacity: .4; }
-  }
-
-
-    /* ── Главный контент ── */
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 40px 24px 60px;
-  }
-
-  /* ── Секция заголовок ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .section-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--spark);
-    text-transform: uppercase;
-  }
-
-  .section-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--border2), transparent);
-  }
+ 
