@@ -18,6 +18,7 @@ import (
 	"strings"
 	"time" 
   "flasher/config"
+  "flasher/db"
 )
  
  
@@ -58,7 +59,7 @@ func encryptAndSign(fw []byte, cfg *config.Config) ([]byte, error) {
 }
 
 //func listFirmwares(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
-func listFirmwares(cfg *config.Config) http.HandlerFunc {
+func handleListFirmwares(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// cfg доступен здесь (захвачен из внешней функции)
 		fmt.Println(cfg.FirmwaresDir) 
@@ -88,7 +89,7 @@ func listFirmwares(cfg *config.Config) http.HandlerFunc {
  }
 }
 
-func downloadFirmware (cfg *config.Config) http.HandlerFunc {
+func handleDownloadFirmware (cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) { // (w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	id := strings.TrimPrefix(r.URL.Path, "/api/firmwares/")
 	id = strings.Trim(id, "/")
@@ -101,7 +102,7 @@ func downloadFirmware (cfg *config.Config) http.HandlerFunc {
  }
 }
 
-func deleteFirmware (cfg *config.Config) http.HandlerFunc {
+func handleDeleteFirmware (cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) { // (w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	if r.Method != http.MethodDelete {
 		http.Error(w, "method not allowed", 405)
@@ -133,8 +134,9 @@ func deleteFirmware (cfg *config.Config) http.HandlerFunc {
 	json.NewEncoder(w).Encode(map[string]bool{"ok": true})
  }
 }
+ 
 
-func uploadFirmware (cfg *config.Config) http.HandlerFunc {
+func handleUploadFirmware (cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) { //(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "method not allowed", 405)
@@ -189,7 +191,27 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
 		"size": len(encrypted),
 	})
  }
+} 
+
+func handleDownloadFlasher (cfg *config.Config) http.HandlerFunc {
+  return func(w http.ResponseWriter, r *http.Request) {
+    // Implementation for downloading the flasher
+  }
 }
+
+func  handleListFlashers (cfg *config.Config) http.HandlerFunc {
+  return func(w http.ResponseWriter, r *http.Request) {
+    // Implementation for listing flashers
+  }
+}
+
+func handleDeleteFlasher (cfg *config.Config) http.HandlerFunc {
+  return func(w http.ResponseWriter, r *http.Request) {
+    // Implementation for deleting a flasher
+  }
+ }
+
+
 
  func main() {
 
@@ -199,6 +221,8 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+  create_database()
 
 	if err := os.MkdirAll(cfg.FirmwaresDir, 0755); err != nil {
 		log.Fatal(err)
@@ -260,6 +284,17 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
+  
+
+  http.HandleFunc("/list_firmwares", handleListFirmwares(cfg))
+  http.HandleFunc("/download_firmware/", handleDownloadFirmware(cfg))
+  http.HandleFunc("/upload_firmware", handleUploadFirmware(cfg))
+  http.HandleFunc("/delete_firmware/", handleDeleteFirmware(cfg))
+
+  http.HandleFunc("/list_flashers", handleListFlashers(cfg))
+  http.HandleFunc("/download_flasher/", handleDownloadFlasher(cfg))
+  http.HandleFunc("/upload_flasher", handleUploadFlasher(cfg))
+  http.HandleFunc("/delete_flasher/", handleDeleteFlasher(cfg))
 
 	// -------- START --------
 
