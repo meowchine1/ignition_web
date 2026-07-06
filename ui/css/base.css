@@ -1,16 +1,16 @@
 :root {
-  --black:   #0f1318;  /* светлее: было #080a0c */
-  --dark:    #161c22;  /* светлее: было #0d1014 */
-  --panel:   #1a2028;  /* светлее: было #111418 */
-  --card:    #1e262e;  /* светлее: было #161b20 */
-  --border:  #2a3540;  /* светлее: было #1e262e */
-  --border2: #3a4f60;  /* светлее: было #2a3540 */
+  --black:   #0f1318;
+  --dark:    #161c22;
+  --panel:   #1a2028;
+  --card:    #1e262e;
+  --border:  #2a3540;
+  --border2: #3a4f60;
   --spark:   #ff6b00;
   --spark2:  #ffaa00;
   --spark3:  #ff3d00;
   --steel:   #8a9baa;
-  --text:    #cdd8e0;
-  --dim:     #4d6b80;  /* чуть светлее: было #4a5a68 */
+  --text:    #e8f0f5;  /* ярче: было #cdd8e0 */
+  --dim:     #7a9ab0;  /* ярче: было #4d6b80 */
   --success: #00c97a;
   --danger:  #ff3b3b;
 }
@@ -21,7 +21,9 @@ body {
   background: var(--black);
   color: var(--text);
   font-family: 'Rajdhani', sans-serif;
-  font-size: 15px;
+  font-size: 17px;        /* было 15px */
+  font-weight: 500;       /* Rajdhani читается лучше на 500 */
+  line-height: 1.65;      /* добавлено — воздух между строками */
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -39,7 +41,7 @@ body::before {
   z-index: 0;
 }
 
-/* крупная сетка 200px — акцентные линии */
+/* крупная сетка 200px */
 body::after {
   content: '';
   position: fixed;
@@ -72,7 +74,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 68px;           /* чуть выше: было 64px */
 }
 
 .logo {
@@ -91,7 +93,7 @@ header {
 }
 
 .logo-text .brand {
-  font-size: 20px;
+  font-size: 22px;        /* было 20px */
   font-weight: 700;
   letter-spacing: 3px;
   color: #fff;
@@ -102,10 +104,10 @@ header {
 
 .logo-text .sub {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 9px;
+  font-size: 10px;        /* было 9px */
   color: var(--dim);
   letter-spacing: 2px;
-  margin-top: 3px;
+  margin-top: 4px;
 }
 
 .header-right {
@@ -119,18 +121,18 @@ header {
   align-items: center;
   gap: 7px;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: 11px;        /* было 10px */
   color: var(--dim);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .status-dot {
-  width: 7px;
-  height: 7px;
+  width: 8px;             /* было 7px */
+  height: 8px;
   border-radius: 50%;
   background: var(--success);
-  box-shadow: 0 0 8px var(--success);
+  box-shadow: 0 0 10px var(--success);
   animation: blink 2s ease-in-out infinite;
 }
 
@@ -142,9 +144,9 @@ header {
 .container {
   position: relative;
   z-index: 1;
-  max-width: 960px;
+  max-width: 980px;
   margin: 0 auto;
-  padding: 40px 24px 60px;
+  padding: 48px 24px 70px;
 }
 
 /* ── Section header ── */
@@ -152,14 +154,14 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;    /* было 16px */
   width: 100%;
 }
 
 .section-label {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 3px;
+  font-size: 11px;        /* было 10px */
+  letter-spacing: 4px;    /* было 3px */
   color: var(--spark);
   text-transform: uppercase;
   white-space: nowrap;
@@ -170,7 +172,6 @@ header {
   flex: 1;
   min-width: 0;
   height: 1px;
-  /* ярче: добавлен spark как начальный цвет + выше opacity у border2 */
   background: linear-gradient(90deg, var(--spark), var(--border2), transparent);
   display: block;
 }
