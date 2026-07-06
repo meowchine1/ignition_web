@@ -226,6 +226,12 @@ func uploadFirmware (cfg *config.Config) http.HandlerFunc {
 			http.FileServer(http.Dir("./ui/css")),
 		),
 	)
+  
+	mux.Handle("/js/",
+		http.StripPrefix("/js/",
+			http.FileServer(http.Dir("./ui/js")),
+		),
+	)
 
 	// -------- ROUTES --------
 

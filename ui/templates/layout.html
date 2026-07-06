@@ -9,18 +9,21 @@
 
     <title>{{ .Title }}</title>
 
-    <link rel="stylesheet" href="/css/base.css">
-
+<link rel="stylesheet" href="/css/base.css">
+<link rel="stylesheet" href="/css/tech.css">
+<link rel="stylesheet" href="css/business.css">
 {{ template "styles"}}
 
 </head>
 
 <body>
-
     {{ template "header" . }}
-
+ 
+    <main id="app"> 
     {{ template "content" . }}
+    </main>
 
+     <script src="/js/navigation.js" defer></script>
 </body>
 
 </html>
