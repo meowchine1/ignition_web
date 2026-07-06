@@ -1,5 +1,5 @@
 {{ define "styles" }}
-<link rel="stylesheet" href="css/business.css">  
+<link rel="stylesheet" href="css/business.css">
 {{ end }}
 
 
@@ -16,44 +16,102 @@
 
   <div class="hero-left">
 
+    <div class="hero-eyebrow">New Generation · Programmable</div>
+
     <h1 class="hero-title">
       NEXT GENERATION<br>
       ELECTRONIC<br>
-      IGNITION SYSTEM
+      <span class="fire">IGNITION</span>
     </h1>
 
     <p class="hero-text">
       A programmable ignition system with adaptive spark control.
-      The system dynamically adjusts ignition energy, discharge duration
-      and operating mode depending on engine conditions and load.
+      Dynamically adjusts ignition energy, discharge duration and
+      operating mode — for every engine condition and load.
     </p>
 
     <div class="hero-buttons">
-      <a href="#" class="btn-primary">LEARN MORE</a>
-      <a href="#" class="btn-secondary">TECH OVERVIEW</a>
+      <a href="/download/flasher" class="btn-primary">
+        ↓ DOWNLOAD FLASHER
+      </a>
+      <a href="/tech" class="btn-secondary">
+        TECH OVERVIEW →
+      </a>
     </div>
 
   </div>
 
   <div class="hero-right">
-    <svg class="hero-logo" viewBox="0 0 300 300">
-      <polygon
-          points="170,20 80,150 150,150 140,280 230,120 160,120"
-          fill="#ff6b00"/>
-      <polygon
-          points="170,20 80,150 150,150 140,280 230,120 160,120"
-          fill="url(#heroGradient)"
-          opacity=".6"/>
+    <svg class="hero-logo" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="heroGradient">
-          <stop offset="0%" stop-color="#ff3d00"/>
-          <stop offset="100%" stop-color="#ffaa00"/>
+        <linearGradient id="boltGrad" x1="0%" y1="0%" x2="60%" y2="100%">
+          <stop offset="0%"   stop-color="#ffaa00"/>
+          <stop offset="50%"  stop-color="#ff6b00"/>
+          <stop offset="100%" stop-color="#ff3d00"/>
         </linearGradient>
+        <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   stop-color="#ffaa00" stop-opacity=".35"/>
+          <stop offset="100%" stop-color="#ff3d00" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="spark-glow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="6" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
+
+      <!-- Внешнее свечение-ядро -->
+      <circle cx="150" cy="150" r="130" fill="url(#coreGlow)"/>
+
+      <!-- Концентрические кольца (резонанс) -->
+      <circle cx="150" cy="150" r="128" fill="none" stroke="rgba(255,107,0,.10)" stroke-width="1"/>
+      <circle cx="150" cy="150" r="100" fill="none" stroke="rgba(255,107,0,.16)" stroke-width="1"/>
+      <circle cx="150" cy="150" r="70"  fill="none" stroke="rgba(255,170,0,.22)" stroke-width="1"/>
+
+      <!-- Крестовины (силовые линии) -->
+      <line x1="150" y1="22"  x2="150" y2="52"  stroke="rgba(255,107,0,.3)" stroke-width="1"/>
+      <line x1="150" y1="248" x2="150" y2="278" stroke="rgba(255,107,0,.3)" stroke-width="1"/>
+      <line x1="22"  y1="150" x2="52"  y2="150" stroke="rgba(255,107,0,.3)" stroke-width="1"/>
+      <line x1="248" y1="150" x2="278" y2="150" stroke="rgba(255,107,0,.3)" stroke-width="1"/>
+
+      <!-- Молния — фоновое свечение -->
+      <polygon
+        points="168,18 78,152 148,152 136,282 226,122 156,122"
+        fill="rgba(255,107,0,.25)"
+        filter="url(#spark-glow)"/>
+
+      <!-- Молния — основная форма -->
+      <polygon
+        points="168,18 78,152 148,152 136,282 226,122 156,122"
+        fill="url(#boltGrad)"/>
+
+      <!-- Молния — бликовый highlight -->
+      <polygon
+        points="168,18 78,152 148,152 136,282 226,122 156,122"
+        fill="rgba(255,255,255,.10)"/>
     </svg>
   </div>
 
 </section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-value">×3.5</div>
+    <div class="stat-label">Spark energy<br>vs classic CDI</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">5 ms</div>
+    <div class="stat-label">Max discharge<br>duration</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">4 CH</div>
+    <div class="stat-label">Independent<br>ignition channels</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">100%</div>
+    <div class="stat-label">Programmable<br>spark parameters</div>
+  </div>
+</div>
 
 <!-- FEATURES -->
 <div class="section-header">
@@ -63,28 +121,28 @@
 
 <section class="features">
   <div class="feature-card">
-    <h3>ADAPTIVE SPARK CONTROL</h3>
-    <p>Automatically adjusts ignition energy and discharge behavior
-    based on engine load and operating conditions.</p>
+    <span class="feature-icon">⚡</span>
+    <h3>Adaptive Spark Control</h3>
+    <p>Ignition energy adjusts automatically per cycle — based on load, RPM and conditions. No fixed hardware limits.</p>
   </div>
   <div class="feature-card">
-    <h3>EXTENDED COMBUSTION WINDOW</h3>
-    <p>Supports controlled and longer spark events for more stable
-    combustion and improved efficiency.</p>
+    <span class="feature-icon">〜</span>
+    <h3>Extended Combustion Window</h3>
+    <p>Longer, controlled spark discharge improves flame stability and combustion efficiency across all operating modes.</p>
   </div>
   <div class="feature-card">
-    <h3>PROGRAMMABLE MODES</h3>
-    <p>Multiple ignition profiles for tuning, performance and
-    different engine configurations.</p>
+    <span class="feature-icon">◈</span>
+    <h3>Programmable Modes</h3>
+    <p>Cold start, performance, economy and diagnostics — each with independent spark energy and timing profiles.</p>
   </div>
   <div class="feature-card">
-    <h3>HIGH ENERGY OUTPUT</h3>
-    <p>Designed for demanding engines with stable high-voltage
-    spark delivery.</p>
+    <span class="feature-icon">⊞</span>
+    <h3>High Energy Output</h3>
+    <p>Designed for demanding engines. Stable high-voltage delivery even under boost, lean mix and extreme conditions.</p>
   </div>
 </section>
 
-<!-- HOW -->
+<!-- HOW IT WORKS -->
 <div class="section-header">
   <span class="section-label">How It Works</span>
   <div class="section-line"></div>
@@ -93,26 +151,30 @@
 <section class="workflow">
   <div class="step">
     <div class="step-number">01</div>
-    <div class="step-title">Install system</div>
+    <div class="step-title">Install<br>System</div>
+    <div class="step-desc">Mount the controller, connect to coil and crank sensor</div>
   </div>
   <div class="arrow">→</div>
   <div class="step">
     <div class="step-number">02</div>
-    <div class="step-title">Connect ignition</div>
+    <div class="step-title">Flash<br>Firmware</div>
+    <div class="step-desc">Use the flasher tool to upload your engine profile</div>
   </div>
   <div class="arrow">→</div>
   <div class="step">
     <div class="step-number">03</div>
-    <div class="step-title">Select mode</div>
+    <div class="step-title">Select<br>Mode</div>
+    <div class="step-desc">Choose from presets or configure spark parameters manually</div>
   </div>
   <div class="arrow">→</div>
   <div class="step">
     <div class="step-number">04</div>
-    <div class="step-title">Start engine</div>
+    <div class="step-title">Start<br>Engine</div>
+    <div class="step-desc">System adapts in real time to engine load and conditions</div>
   </div>
 </section>
 
-<!-- TARGET USERS -->
+<!-- BUILT FOR -->
 <div class="section-header">
   <span class="section-label">Built For</span>
   <div class="section-line"></div>
@@ -120,34 +182,40 @@
 
 <section class="features">
   <div class="feature-card">
-    <h3>PERFORMANCE ENGINES</h3>
-    <p>Stable ignition control under high load and demanding conditions.</p>
+    <span class="feature-icon">◎</span>
+    <h3>Performance Engines</h3>
+    <p>Stable ignition under high boost and compression where conventional systems start to misfire.</p>
   </div>
   <div class="feature-card">
-    <h3>TUNING SPECIALISTS</h3>
-    <p>Precise control over ignition behavior for engine optimization.</p>
+    <span class="feature-icon">⊡</span>
+    <h3>Tuning Specialists</h3>
+    <p>Precise control over every spark parameter for fine-tuned engine optimization and mapping.</p>
   </div>
   <div class="feature-card">
-    <h3>MOTORSPORT PROJECTS</h3>
-    <p>Reliable ignition system for racing and high-performance use.</p>
+    <span class="feature-icon">◈</span>
+    <h3>Motorsport Projects</h3>
+    <p>Switchable profiles for race, qualify and warm-up. Built for reliability under competition stress.</p>
   </div>
   <div class="feature-card">
-    <h3>ENGINE DEVELOPERS</h3>
-    <p>Flexible ignition platform for experimental and R&D engines.</p>
+    <span class="feature-icon">⚙</span>
+    <h3>Engine Developers</h3>
+    <p>A flexible ignition platform for R&D — full parameter access and real-time feedback via interface.</p>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta">
-  <h2>READY TO UPGRADE YOUR IGNITION?</h2>
-  <p>Precise. Stable. Programmable ignition control for modern engines.</p>
+  <h2>UPGRADE YOUR IGNITION</h2>
+  <p>Precise. Stable. Fully programmable ignition control for modern engines. Download the flasher tool and get started today.</p>
   <div class="hero-buttons">
-    <a href="#" class="btn-primary">GET STARTED</a>
-    <a href="#" class="btn-secondary">CONTACT US</a>
+    <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+    <a href="/tech" class="btn-secondary">TECH OVERVIEW →</a>
   </div>
 </section>
 
 </div>
+<script>
 
-<script></script>
+  
+</script>
 {{ end }}

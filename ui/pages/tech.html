@@ -1,3 +1,223 @@
- 
- {{ define "content" }}
- {{ end }}
+{{ define "styles" }}
+<link rel="stylesheet" href="css/business.css">
+<link rel="stylesheet" href="css/tech.css">
+{{ end }}
+
+
+{{ define "content" }}
+<div class="container">
+
+<!-- HERO TECH -->
+<div class="section-header">
+  <span class="section-label">Technical Overview</span>
+  <div class="section-line"></div>
+</div>
+
+<section class="tech-hero">
+  <div class="tech-hero-left">
+    <div class="hero-eyebrow">Architecture · v2.0</div>
+    <h1 class="tech-title">
+      HOW THE<br>
+      <span class="fire">SYSTEM</span><br>
+      WORKS
+    </h1>
+    <p class="hero-text">
+      A new ignition architecture that combines capacitive discharge
+      with active resonant energy injection via a half-bridge converter.
+      Every spark parameter is under software control.
+    </p>
+    <div class="hero-buttons">
+      <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+      <a href="/" class="btn-secondary">← BACK TO OVERVIEW</a>
+    </div>
+  </div>
+
+  <div class="tech-hero-right">
+    <!-- Схема блоков системы -->
+    <div class="block-diagram">
+      <div class="bd-block bd-center">
+        <div class="bd-label">MCU<br>Controller</div>
+      </div>
+      <div class="bd-row">
+        <div class="bd-block">
+          <div class="bd-label">HV<br>Capacitor</div>
+        </div>
+        <div class="bd-block bd-accent">
+          <div class="bd-label">Half-Bridge<br>Converter</div>
+        </div>
+        <div class="bd-block">
+          <div class="bd-label">Ignition<br>Coil</div>
+        </div>
+      </div>
+      <div class="bd-block bd-bottom">
+        <div class="bd-label">Spark<br>Plug</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<div class="section-header">
+  <span class="section-label">System Architecture</span>
+  <div class="section-line"></div>
+</div>
+
+<section class="tech-arch">
+
+  <div class="arch-item">
+    <div class="arch-num">01</div>
+    <div class="arch-body">
+      <h3>Capacitive Discharge Stage</h3>
+      <p>A high-voltage capacitor accumulates a precisely metered energy charge before each ignition event. Unlike inductive systems, discharge energy is not limited by coil saturation — it is set digitally by the controller for every cycle.</p>
+    </div>
+  </div>
+
+  <div class="arch-item">
+    <div class="arch-num">02</div>
+    <div class="arch-body">
+      <h3>Resonant Energy Injection</h3>
+      <p>A high-voltage half-bridge converter actively pumps additional energy into the primary winding during the spark discharge. This sustains and extends the plasma channel beyond what a passive CDI can achieve, improving combustion stability under lean or high-pressure conditions.</p>
+    </div>
+  </div>
+
+  <div class="arch-item">
+    <div class="arch-num">03</div>
+    <div class="arch-body">
+      <h3>Software Spark Control</h3>
+      <p>The 32-bit controller sets four independent parameters per ignition event: spark energy, discharge duration, primary winding energy and plasma channel shape. Parameters update in real time based on engine feedback without any hardware change.</p>
+    </div>
+  </div>
+
+  <div class="arch-item">
+    <div class="arch-num">04</div>
+    <div class="arch-body">
+      <h3>Multi-Channel Output</h3>
+      <p>Four fully independent ignition channels, each with its own profile. Supports sequential, wasted-spark and direct-fire configurations. Channel-to-channel timing resolution is below 1 µs.</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- COMPARISON TABLE -->
+<div class="section-header">
+  <span class="section-label">Comparison</span>
+  <div class="section-line"></div>
+</div>
+
+<section class="compare-table">
+  <div class="ct-head">
+    <div class="ct-col ct-param">Parameter</div>
+    <div class="ct-col">Inductive</div>
+    <div class="ct-col">Classic CDI</div>
+    <div class="ct-col ct-ours">This System</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Spark energy control</div>
+    <div class="ct-col ct-no">Fixed</div>
+    <div class="ct-col ct-no">Fixed</div>
+    <div class="ct-col ct-ours ct-yes">Programmable</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Discharge duration</div>
+    <div class="ct-col ct-no">~2–3 ms fixed</div>
+    <div class="ct-col ct-no">~0.1 ms fixed</div>
+    <div class="ct-col ct-ours ct-yes">0.1–5 ms variable</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Energy under boost</div>
+    <div class="ct-col ct-no">Drops</div>
+    <div class="ct-col ct-mid">Stable</div>
+    <div class="ct-col ct-ours ct-yes">Stable + boosted</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Plasma channel shape</div>
+    <div class="ct-col ct-no">None</div>
+    <div class="ct-col ct-no">None</div>
+    <div class="ct-col ct-ours ct-yes">Controllable</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Real-time adaptation</div>
+    <div class="ct-col ct-no">No</div>
+    <div class="ct-col ct-no">No</div>
+    <div class="ct-col ct-ours ct-yes">Yes</div>
+  </div>
+  <div class="ct-row">
+    <div class="ct-col ct-param">Interface</div>
+    <div class="ct-col ct-no">None</div>
+    <div class="ct-col ct-no">None</div>
+    <div class="ct-col ct-ours ct-yes">CAN / UART / SPI</div>
+  </div>
+</section>
+
+<!-- TECH SPECS -->
+<div class="section-header">
+  <span class="section-label">Technical Specifications</span>
+  <div class="section-line"></div>
+</div>
+
+<section class="tech-specs">
+  <div class="spec-row">
+    <span class="spec-name">Discharge voltage</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">up to 40 kV</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Spark duration range</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">0.1 – 5.0 ms</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Energy per spark</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">up to 180 mJ</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Converter topology</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">Half-bridge resonant</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Ignition channels</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">4 × independent</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Channel timing resolution</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">&lt; 1 µs</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Control interface</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">CAN / UART / SPI</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Supply voltage</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">10 – 16 V DC</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">Operating temperature</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">−40 … +105 °C</span>
+  </div>
+  <div class="spec-row">
+    <span class="spec-name">MCU</span>
+    <span class="spec-dots"></span>
+    <span class="spec-value">32-bit ARM Cortex-M</span>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h2>READY TO INTEGRATE?</h2>
+  <p>Download the flasher tool, explore the firmware source or contact our engineering team for integration support.</p>
+  <div class="hero-buttons">
+    <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+    <a href="/" class="btn-secondary">← PRODUCT OVERVIEW</a>
+  </div>
+</section>
+
+</div>
+<script></script>
+{{ end }}

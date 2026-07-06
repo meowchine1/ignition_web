@@ -9,8 +9,8 @@
   --spark2:  #ffaa00;
   --spark3:  #ff3d00;
   --steel:   #8a9baa;
-  --text:    #e8f0f5;  /* ярче: было #cdd8e0 */
-  --dim:     #7a9ab0;  /* ярче: было #4d6b80 */
+  --text:    #e8f0f5;
+  --dim:     #7a9ab0;
   --success: #00c97a;
   --danger:  #ff3b3b;
 }
@@ -21,14 +21,13 @@ body {
   background: var(--black);
   color: var(--text);
   font-family: 'Rajdhani', sans-serif;
-  font-size: 17px;        /* было 15px */
-  font-weight: 500;       /* Rajdhani читается лучше на 500 */
-  line-height: 1.65;      /* добавлено — воздух между строками */
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.65;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-/* мелкая сетка 40px */
 body::before {
   content: '';
   position: fixed;
@@ -41,7 +40,6 @@ body::before {
   z-index: 0;
 }
 
-/* крупная сетка 200px */
 body::after {
   content: '';
   position: fixed;
@@ -57,7 +55,6 @@ body::after {
 .spark-line {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--spark3), var(--spark2), var(--spark), transparent);
-  position: relative;
   animation: spark-pulse 3s ease-in-out infinite;
 }
 @keyframes spark-pulse {
@@ -74,62 +71,47 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;           /* чуть выше: было 64px */
+  height: 68px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.logo-icon { width: 36px; height: 36px; position: relative; }
+.logo { display: flex; align-items: center; gap: 14px; }
+.logo-icon { width: 36px; height: 36px; }
 .logo-icon svg { width: 36px; height: 36px; }
 
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1;
-}
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
 
 .logo-text .brand {
-  font-size: 22px;        /* было 20px */
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: 3px;
   color: #fff;
   text-transform: uppercase;
 }
-
 .logo-text .brand span { color: var(--spark); }
 
 .logo-text .sub {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;        /* было 9px */
+  font-size: 10px;
   color: var(--dim);
   letter-spacing: 2px;
   margin-top: 4px;
 }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
+.header-right { display: flex; align-items: center; gap: 20px; }
 
 .status-badge {
   display: flex;
   align-items: center;
   gap: 7px;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;        /* было 10px */
+  font-size: 11px;
   color: var(--dim);
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .status-dot {
-  width: 8px;             /* было 7px */
-  height: 8px;
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--success);
   box-shadow: 0 0 10px var(--success);
@@ -154,14 +136,14 @@ header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 20px;    /* было 16px */
+  margin-bottom: 20px;
   width: 100%;
 }
 
 .section-label {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;        /* было 10px */
-  letter-spacing: 4px;    /* было 3px */
+  font-size: 11px;
+  letter-spacing: 4px;
   color: var(--spark);
   text-transform: uppercase;
   white-space: nowrap;
@@ -175,3 +157,7 @@ header {
   background: linear-gradient(90deg, var(--spark), var(--border2), transparent);
   display: block;
 }
+
+
+
+/* <-- оставить комменатрий чтобы я видела где кончается часть базового css --> */
