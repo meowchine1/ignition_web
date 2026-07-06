@@ -1,16 +1,16 @@
 :root {
-  --black:   #080a0c;
-  --dark:    #0d1014;
-  --panel:   #111418;
-  --card:    #161b20;
-  --border:  #1e262e;
-  --border2: #2a3540;
+  --black:   #0f1318;  /* светлее: было #080a0c */
+  --dark:    #161c22;  /* светлее: было #0d1014 */
+  --panel:   #1a2028;  /* светлее: было #111418 */
+  --card:    #1e262e;  /* светлее: было #161b20 */
+  --border:  #2a3540;  /* светлее: было #1e262e */
+  --border2: #3a4f60;  /* светлее: было #2a3540 */
   --spark:   #ff6b00;
   --spark2:  #ffaa00;
   --spark3:  #ff3d00;
   --steel:   #8a9baa;
   --text:    #cdd8e0;
-  --dim:     #4a5a68;
+  --dim:     #4d6b80;  /* чуть светлее: было #4a5a68 */
   --success: #00c97a;
   --danger:  #ff3b3b;
 }
@@ -26,25 +26,27 @@ body {
   overflow-x: hidden;
 }
 
+/* мелкая сетка 40px */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,107,0,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,107,0,.08) 1px, transparent 1px);
+    linear-gradient(rgba(255,107,0,.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,0,.10) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
 }
 
+/* крупная сетка 200px — акцентные линии */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,107,0,.18) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,107,0,.18) 1px, transparent 1px);
+    linear-gradient(rgba(255,107,0,.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,0,.28) 1px, transparent 1px);
   background-size: 200px 200px;
   pointer-events: none;
   z-index: 0;
@@ -57,7 +59,7 @@ body::after {
   animation: spark-pulse 3s ease-in-out infinite;
 }
 @keyframes spark-pulse {
-  0%, 100% { opacity: .6; }
+  0%, 100% { opacity: .7; }
   50%       { opacity: 1; }
 }
 
@@ -145,13 +147,13 @@ header {
   padding: 40px 24px 60px;
 }
 
-/* ── Section header с тремя ровными линиями ── */
+/* ── Section header ── */
 .section-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 16px;
-  width: 100%;          /* растягивается на всю ширину контейнера */
+  width: 100%;
 }
 
 .section-label {
@@ -160,16 +162,15 @@ header {
   letter-spacing: 3px;
   color: var(--spark);
   text-transform: uppercase;
-  white-space: nowrap;  /* текст не переносится — линии не скачут */
-  flex-shrink: 0;       /* текст не сжимается */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .section-line {
-  flex: 1;              /* занимает всё оставшееся пространство */
-  min-width: 0;         /* позволяет flex-элементу сжиматься корректно */
+  flex: 1;
+  min-width: 0;
   height: 1px;
-  background: linear-gradient(90deg, var(--border2), transparent);
-  display: block;       /* убираем inline-артефакты */
+  /* ярче: добавлен spark как начальный цвет + выше opacity у border2 */
+  background: linear-gradient(90deg, var(--spark), var(--border2), transparent);
+  display: block;
 }
-
- 

@@ -21,7 +21,7 @@
   }
 
   .auth-card label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 2px;
     color: var(--steel);
@@ -108,7 +108,7 @@
 
   .upload-sub {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--dim);
     letter-spacing: 1px;
   }
@@ -355,7 +355,7 @@
 
   .stat-label {
     font-family: 'Share Tech Mono', monospace;
-    font-size: 9px;
+    font-size: 12px;
     color: var(--dim);
     letter-spacing: 2px;
     text-transform: uppercase;
