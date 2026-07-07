@@ -1,5 +1,6 @@
 PRAGMA foreign_keys = ON;
 
+
 CREATE TABLE IF NOT EXISTS firmware (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
@@ -10,7 +11,10 @@ CREATE TABLE IF NOT EXISTS firmware (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_firmware_name ON firmware(name);
+
+CREATE INDEX IF NOT EXISTS idx_firmware_name
+ON firmware(name);
+
 
 
 CREATE TABLE IF NOT EXISTS flasher (
@@ -23,4 +27,6 @@ CREATE TABLE IF NOT EXISTS flasher (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX IF NOT EXISTS idx_flasher_name ON flasher(name);
+
+CREATE INDEX IF NOT EXISTS idx_flasher_name
+ON flasher(name);

@@ -1,49 +1,206 @@
 package db
 
-import (
-	"database/sql"
+import ( 
 	"time"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
-type DB struct {
-	Conn *sql.DB
+type FileRecord struct {
+	ID        int64
+	Name      string
+	Size      int64
+	ModTime   time.Time
+	SHA256    string
+	Path      string
+	CreatedAt time.Time
 }
 
-func Init(path string) (*DB, error) {
-	conn, err := sql.Open("sqlite3", path)
+// =========================
+// Firmware
+// =========================
+
+func (db *DB) AddFirmware(f FileRecord) error {
+
+	_, err := db.Conn.Exec(
+		`
+		INSERT INTO firmware
+		(
+			name,
+			size,
+			mod_time,
+			sha256,
+			path
+		)
+		VALUES (?, ?, ?, ?, ?)
+		`,
+		f.Name,
+		f.Size,
+		f.ModTime,
+		f.SHA256,
+		f.Path,
+	)
+
+	return err
+}
+
+func (db *DB) DeleteFirmware(id int64) error {
+
+	_, err := db.Conn.Exec(
+		`
+		DELETE FROM firmware
+		WHERE id = ?
+		`,
+		id,
+	)
+
+	return err
+}
+
+func (db *DB) ListFirmwares() ([]FileRecord, error) {
+
+	rows, err := db.Conn.Query(
+		`
+		SELECT
+			id,
+			name,
+			size,
+			mod_time,
+			sha256,
+			path,
+			created_at
+		FROM firmware
+		ORDER BY created_at DESC
+		`,
+	)
+
 	if err != nil {
 		return nil, err
 	}
 
-	// connection pool tuning
-	conn.SetMaxOpenConns(1) // SQLite safe mode
-	conn.SetMaxIdleConns(1)
-	conn.SetConnMaxLifetime(time.Hour)
+	defer rows.Close()
 
-	if err := conn.Ping(); err != nil {
-		return nil, err
-	}
+	var result []FileRecord
 
-	// PRAGMA for performance + reliability
-	pragmas := []string{
-		"PRAGMA foreign_keys = ON;",
-		"PRAGMA journal_mode = WAL;",
-		"PRAGMA synchronous = NORMAL;",
-		"PRAGMA temp_store = MEMORY;",
-		"PRAGMA mmap_size = 268435456;", // 256MB
-	}
+	for rows.Next() {
 
-	for _, p := range pragmas {
-		if _, err := conn.Exec(p); err != nil {
+		var f FileRecord
+
+		err := rows.Scan(
+			&f.ID,
+			&f.Name,
+			&f.Size,
+			&f.ModTime,
+			&f.SHA256,
+			&f.Path,
+			&f.CreatedAt,
+		)
+
+		if err != nil {
 			return nil, err
 		}
+
+		result = append(result, f)
 	}
 
-	if err := applyMigrations(conn); err != nil {
+	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return &DB{Conn: conn}, nil
+	return result, nil
+}
+
+// =========================
+// Flasher
+// =========================
+
+func (db *DB) AddFlasher(f FileRecord) error {
+
+	_, err := db.Conn.Exec(
+		`
+		INSERT INTO flasher
+		(
+			name,
+			size,
+			mod_time,
+			sha256,
+			path
+		)
+		VALUES (?, ?, ?, ?, ?)
+		`,
+		f.Name,
+		f.Size,
+		f.ModTime,
+		f.SHA256,
+		f.Path,
+	)
+
+	return err
+}
+
+func (db *DB) DeleteFlasher(id int64) error {
+
+	_, err := db.Conn.Exec(
+		`
+		DELETE FROM flasher
+		WHERE id = ?
+		`,
+		id,
+	)
+
+	return err
+}
+
+func (db *DB) ListFlashers() ([]FileRecord, error) {
+
+	rows, err := db.Conn.Query(
+		`
+		SELECT
+			id,
+			name,
+			size,
+			mod_time,
+			sha256,
+			path,
+			created_at
+		FROM flasher
+		ORDER BY created_at DESC
+		`,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var result []FileRecord
+
+	for rows.Next() {
+
+		var f FileRecord
+
+
+		err := rows.Scan(
+			&f.ID,
+			&f.Name,
+			&f.Size,
+			&f.ModTime,
+			&f.SHA256,
+			&f.Path,
+			&f.CreatedAt,
+		)
+
+
+		if err != nil {
+			return nil, err
+		}
+
+
+		result = append(result, f)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
