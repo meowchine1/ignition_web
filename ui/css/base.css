@@ -62,67 +62,128 @@ body::after {
   50%       { opacity: 1; }
 }
 
+/* =========================
+   HEADER
+========================= */ 
+ 
 header {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   background: var(--dark);
   border-bottom: 1px solid var(--border);
   padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 68px;
+  height: 72px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.45);
+  overflow: hidden;
 }
-
-.logo { display: flex; align-items: center; gap: 14px; }
-.logo-icon { width: 36px; height: 36px; }
-.logo-icon svg { width: 36px; height: 36px; }
-
+ 
+/* Оранжевая черта вдоль левого края */
+header::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 15%; bottom: 15%;
+  width: 2px;
+  background: linear-gradient(180deg,
+    transparent,
+    var(--spark) 40%,
+    var(--spark2) 60%,
+    transparent);
+  border-radius: 2px;
+}
+ 
+/* Слабое радиальное свечение за логотипом */
+header::after {
+  content: '';
+  position: absolute;
+  left: -40px; top: -30px;
+  width: 220px; height: 140px;
+  background: radial-gradient(ellipse,
+    rgba(255,107,0,.07) 0%,
+    transparent 70%);
+  pointer-events: none;
+}
+ 
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+ 
+.logo-icon { width: 38px; height: 38px; flex-shrink: 0; }
+.logo-icon svg { width: 38px; height: 38px; }
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
-
+ 
 .logo-text .brand {
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 4px;
   color: #fff;
   text-transform: uppercase;
 }
 .logo-text .brand span { color: var(--spark); }
-
+ 
 .logo-text .sub {
   font-family: 'Share Tech Mono', monospace;
-  font-size: 10px;
+  font-size: 9px;
   color: var(--dim);
-  letter-spacing: 2px;
-  margin-top: 4px;
+  letter-spacing: 3px;
+  margin-top: 5px;
+  text-transform: uppercase;
 }
-
-.header-right { display: flex; align-items: center; gap: 20px; }
-
+  
+ 
+.header-right {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+ 
 .status-badge {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   font-family: 'Share Tech Mono', monospace;
-  font-size: 11px;
-  color: var(--dim);
-  letter-spacing: 1px;
+  font-size: 10px;
+  color: var(--success);
+  letter-spacing: 2px;
   text-transform: uppercase;
+  border: 1px solid rgba(0,201,122,.22);
+  padding: 6px 14px;
+  background: rgba(0,201,122,.04);
 }
-
+ 
 .status-dot {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   border-radius: 50%;
   background: var(--success);
-  box-shadow: 0 0 10px var(--success);
+  box-shadow: 0 0 8px var(--success);
   animation: blink 2s ease-in-out infinite;
+  flex-shrink: 0;
 }
-
+ 
 @keyframes blink {
   0%, 100% { opacity: 1; }
-  50%       { opacity: .4; }
+  50%       { opacity: .3; }
 }
-
+ 
+@media (max-width: 700px) {
+  header { padding: 0 20px; }
+  .header-center { display: none; }
+  .logo-text .sub { display: none; }
+  .status-badge { padding: 5px 10px; font-size: 9px; letter-spacing: 1px; }
+}
+ 
+/* <-- оставить комменатрий чтобы я видела где кончается часть базового css --> */
+  
 .container {
   position: relative;
   z-index: 1;
@@ -171,39 +232,4 @@ header {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-
-/* new marshrutization transition */
-
-/* @view-transition {
-    navigation: auto;
-}
-
-.page {
-    view-transition-name: page;
-    position: relative;
-    z-index: 1;
-}
-
-::view-transition-old(page) {
-    animation: page-out .22s ease;
-}
-
-::view-transition-new(page) {
-    animation: page-in .32s ease;
-}
-
-@keyframes page-out {
-    to {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-}
-
-@keyframes page-in {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-} */
-
-/* <-- оставить комменатрий чтобы я видела где кончается часть базового css --> */
+ 

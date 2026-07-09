@@ -1,30 +1,42 @@
 {{ define "header" }}
 <div class="spark-line"></div>
 <header>
+
   <div class="logo">
     <div class="logo-icon">
       <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16" fill="#ff6b00"/>
-        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16" fill="url(#sg)" opacity=".6"/>
         <defs>
           <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stop-color="#ff3d00"/>
             <stop offset="100%" stop-color="#ffaa00"/>
           </linearGradient>
+          <filter id="lg" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
+        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16"
+                 fill="#ff6b00" filter="url(#lg)"/>
+        <polygon points="20,2 8,20 17,20 16,34 28,16 19,16"
+                 fill="url(#sg)" opacity=".65"/>
       </svg>
     </div>
     <div class="logo-text">
-      <div class="brand">Ignition</div>
+      <div class="brand">IGNITION</div>
       <div class="sub">IGNITION CONTROL SYSTEM</div>
     </div>
   </div>
+
+  <div class="header-center">
+  
+  </div>
+
   <div class="header-right">
-    <div class="enc-badge">AES-128-CTR · HMAC-SHA256</div>
     <div class="status-badge">
       <span class="status-dot"></span>
       SYSTEM ONLINE
     </div>
   </div>
+
 </header>
 {{ end }}
