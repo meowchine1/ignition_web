@@ -93,6 +93,118 @@
   filter: brightness(1.1);
 }
 
+/* --------------------------------------- */
+
+.download-wrapper {
+  position: relative;
+}
+ 
+/* Панель загрузки */
+.download-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transform: translateY(-8px);
+
+  transition:
+    grid-template-rows .45s cubic-bezier(.22,1,.36,1),
+    opacity .25s ease,
+    transform .45s cubic-bezier(.22,1,.36,1);
+
+  width: 100%;
+  margin-top: 10px;
+}
+ 
+.download-panel::before {
+  content: "";
+  min-height: 0;
+}
+ 
+.download-panel.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transform: translateY(0);
+}
+ 
+.download-panel > * {
+  overflow: hidden;
+}
+ 
+/* варианты загрузки */
+.download-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 14px 20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,107,0,.12),
+      rgba(255,107,0,.02)
+    );
+
+  border: 1px solid rgba(255,107,0,.25);
+
+  color: var(--text);
+  text-decoration: none;
+
+  transition:
+    background .25s ease,
+    border-color .25s ease,
+    transform .25s ease;
+
+  margin-top: 6px;
+
+  min-width: 230px;
+}
+ 
+.download-item:hover {
+  border-color: var(--spark);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,107,0,.22),
+      rgba(255,107,0,.05)
+    );
+
+  transform: translateX(5px);
+}
+ 
+.download-icon {
+  width: 28px;
+  height: 28px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid var(--spark);
+  color:var(--spark);
+
+  font-size:14px;
+}
+ 
+.download-item strong {
+  display:block;
+
+  font-family:'Rajdhani',sans-serif;
+  font-size:16px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+ 
+.download-item small {
+  display:block;
+
+  color:#999;
+  font-size:12px;
+  margin-top:2px;
+}
+
+/* --------------------------------------- */
+
 .btn-secondary {
   border: 1px solid var(--border2);
   color: var(--text);
