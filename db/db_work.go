@@ -1,24 +1,27 @@
 package db
 
-import ( 
+import (
 	"time"
 )
 
-type FileRecord struct {
-	ID        int64
-	Name      string
-	Size      int64
-	ModTime   time.Time
-	SHA256    string
-	Path      string
-	CreatedAt time.Time
-}
 
 // =========================
 // Firmware
 // =========================
 
-func (db *DB) AddFirmware(f FileRecord) error {
+type FirmwareRecord struct {
+	ID        int64
+	Name      string
+	Size      int64
+	Version   string
+	SHA256    string
+	Path      string
+	IsCurrent bool
+	CreatedAt time.Time
+}
+
+
+func (db *DB) AddFirmware(f FirmwareRecord) error {
 
 	_, err := db.Conn.Exec(
 		`
@@ -26,21 +29,24 @@ func (db *DB) AddFirmware(f FileRecord) error {
 		(
 			name,
 			size,
-			mod_time,
+			version,
 			sha256,
-			path
+			path,
+			is_current
 		)
-		VALUES (?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?)
 		`,
 		f.Name,
 		f.Size,
-		f.ModTime,
+		f.Version,
 		f.SHA256,
 		f.Path,
+		boolToInt(f.IsCurrent),
 	)
 
 	return err
 }
+
 
 func (db *DB) DeleteFirmware(id int64) error {
 
@@ -55,7 +61,8 @@ func (db *DB) DeleteFirmware(id int64) error {
 	return err
 }
 
-func (db *DB) ListFirmwares() ([]FileRecord, error) {
+
+func (db *DB) ListFirmwares() ([]FirmwareRecord, error) {
 
 	rows, err := db.Conn.Query(
 		`
@@ -63,9 +70,10 @@ func (db *DB) ListFirmwares() ([]FileRecord, error) {
 			id,
 			name,
 			size,
-			mod_time,
+			version,
 			sha256,
 			path,
+			is_current,
 			created_at
 		FROM firmware
 		ORDER BY created_at DESC
@@ -78,63 +86,96 @@ func (db *DB) ListFirmwares() ([]FileRecord, error) {
 
 	defer rows.Close()
 
-	var result []FileRecord
+
+	var result []FirmwareRecord
+
 
 	for rows.Next() {
 
-		var f FileRecord
+		var f FirmwareRecord
+		var current int
+
 
 		err := rows.Scan(
 			&f.ID,
 			&f.Name,
 			&f.Size,
-			&f.ModTime,
+			&f.Version,
 			&f.SHA256,
 			&f.Path,
+			&current,
 			&f.CreatedAt,
 		)
+
 
 		if err != nil {
 			return nil, err
 		}
 
+
+		f.IsCurrent = current == 1
+
 		result = append(result, f)
 	}
+
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
+
 	return result, nil
 }
+
+
 
 // =========================
 // Flasher
 // =========================
 
-func (db *DB) AddFlasher(f FileRecord) error {
+type FlasherRecord struct {
+	ID        int64
+	Name      string
+	OS        string
+	Version   string
+	Size      int64
+	SHA256    string
+	Path      string
+	IsCurrent bool
+	CreatedAt time.Time
+}
+
+
+
+func (db *DB) AddFlasher(f FlasherRecord) error {
 
 	_, err := db.Conn.Exec(
 		`
 		INSERT INTO flasher
 		(
 			name,
+			os,
+			version,
 			size,
-			mod_time,
 			sha256,
-			path
+			path,
+			is_current
 		)
-		VALUES (?, ?, ?, ?, ?)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
 		`,
 		f.Name,
+		f.OS,
+		f.Version,
 		f.Size,
-		f.ModTime,
 		f.SHA256,
 		f.Path,
+		boolToInt(f.IsCurrent),
 	)
 
 	return err
 }
+
+
 
 func (db *DB) DeleteFlasher(id int64) error {
 
@@ -149,17 +190,21 @@ func (db *DB) DeleteFlasher(id int64) error {
 	return err
 }
 
-func (db *DB) ListFlashers() ([]FileRecord, error) {
+
+
+func (db *DB) ListFlashers() ([]FlasherRecord, error) {
 
 	rows, err := db.Conn.Query(
 		`
 		SELECT
 			id,
 			name,
+			os,
+			version,
 			size,
-			mod_time,
 			sha256,
 			path,
+			is_current,
 			created_at
 		FROM flasher
 		ORDER BY created_at DESC
@@ -172,20 +217,25 @@ func (db *DB) ListFlashers() ([]FileRecord, error) {
 
 	defer rows.Close()
 
-	var result []FileRecord
+
+	var result []FlasherRecord
+
 
 	for rows.Next() {
 
-		var f FileRecord
+		var f FlasherRecord
+		var current int
 
 
 		err := rows.Scan(
 			&f.ID,
 			&f.Name,
+			&f.OS,
+			&f.Version,
 			&f.Size,
-			&f.ModTime,
 			&f.SHA256,
 			&f.Path,
+			&current,
 			&f.CreatedAt,
 		)
 
@@ -195,12 +245,30 @@ func (db *DB) ListFlashers() ([]FileRecord, error) {
 		}
 
 
+		f.IsCurrent = current == 1
+
 		result = append(result, f)
 	}
+
 
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
+
 	return result, nil
+}
+
+
+
+// =========================
+// Helpers
+// =========================
+
+func boolToInt(v bool) int {
+	if v {
+		return 1
+	}
+
+	return 0
 }

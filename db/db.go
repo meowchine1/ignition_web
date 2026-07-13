@@ -14,6 +14,14 @@ type DB struct {
 	Conn *sql.DB
 }
 
+func initSchema(conn *sql.DB) error {
+
+	_, err := conn.Exec(schemaSQL)
+
+	return err
+	 
+}
+
 func Init() (*DB, error) {
 	conn, err := sql.Open(
 		"sqlite3",
@@ -65,10 +73,4 @@ func Init() (*DB, error) {
 }
 
 
-func initSchema(conn *sql.DB) error {
-
-	_, err := conn.Exec(schemaSQL)
-
-	return err
-	 
-}
+ 

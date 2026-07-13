@@ -17,7 +17,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time" 
-  "flasher/config" 
+  "flasher/config"
+  "flasher/db"
 )
  
  
@@ -228,7 +229,7 @@ func handleDeleteFlasher (cfg *config.Config) http.HandlerFunc {
 		log.Fatal(err)
 	}
 
-	// db, err := db.Init()
+	db, err := db.Init()
 
 	if err := os.MkdirAll(cfg.FirmwaresDir, 0755); err != nil {
 		log.Fatal(err)

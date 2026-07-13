@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <!-- Auth -->
+  <!-- Auth
   <div class="section-header">
     <span class="section-label">Admin Token</span>
     <div class="section-line"></div>
@@ -35,78 +35,262 @@
     <input class="auth-input" type="password" id="token-input"
            placeholder="enter admin token...">
     <button class="btn-auth" onclick="saveToken()">AUTHENTICATE</button>
-  </div>
-
-  <!-- Upload -->
+  </div> -->
+  
+  <!-- Upload Firmware -->
   <div class="section-header">
     <span class="section-label">Upload Firmware</span>
     <div class="section-line"></div>
   </div>
 
+
+  <div class="upload-meta">
+
+    <label class="field-label">
+      FIRMWARE VERSION
+    </label>
+
+    <input 
+      class="auth-input"
+      type="text"
+      id="fw-version"
+      placeholder="e.g. 1.2.0">
+
+  </div>
+
+
   <div class="upload-zone" id="drop-zone" onclick="document.getElementById('fw-file').click()">
+
     <input type="file" id="fw-file" accept=".bin">
+
     <div class="upload-icon">
       <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="6" y="30" width="36" height="4" rx="1" fill="#ff6b00" opacity=".4"/>
         <rect x="6" y="36" width="36" height="4" rx="1" fill="#ff6b00" opacity=".2"/>
-        <path d="M24 6 L24 26 M14 16 L24 6 L34 16" stroke="#ff6b00" stroke-width="2.5"
+        <path d="M24 6 L24 26 M14 16 L24 6 L34 16" 
+              stroke="#ff6b00" 
+              stroke-width="2.5"
               stroke-linecap="square"/>
       </svg>
     </div>
-    <div class="upload-title">DROP FIRMWARE FILE</div>
-    <div class="upload-sub">or click to browse · .bin format only</div>
+
+    <div class="upload-title">
+      DROP FIRMWARE FILE
+    </div>
+
+    <div class="upload-sub">
+      or click to browse · .bin format only
+    </div>
+
     <div class="upload-file-name" id="file-name-display"></div>
+
   </div>
 
+
   <div class="progress-wrap" id="progress-wrap">
+
     <div class="progress-label">
-      <span id="progress-status">ENCRYPTING & UPLOADING...</span>
-      <span id="progress-pct">0%</span>
+      <span id="progress-status">
+        ENCRYPTING & UPLOADING...
+      </span>
+
+      <span id="progress-pct">
+        0%
+      </span>
     </div>
+
     <div class="progress-bar">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
+
   </div>
 
+
   <button class="btn-upload" id="upload-btn" onclick="uploadFirmware()" disabled>
-    <span>⬡ &nbsp;ENCRYPT &amp; UPLOAD FIRMWARE</span>
+    <span>
+      ⬡ &nbsp;ENCRYPT &amp; UPLOAD FIRMWARE
+    </span>
   </button>
 
-  <!-- Список -->
+
+  <!-- Firmware Library -->
   <div class="section-header">
     <span class="section-label">Firmware Library</span>
     <div class="section-line"></div>
   </div>
-
+ 
   <div id="fw-list-wrap"></div>
 
+  <!-- Upload Flasher -->
+  <div class="section-header">
+    <span class="section-label">Upload Flasher</span>
+    <div class="section-line"></div>
+  </div>
+
+
+  <div class="upload-meta">
+
+    <label class="field-label">
+      FLASHER OS
+    </label>
+
+    <select 
+      class="auth-input"
+      id="flasher-os">
+
+      <option value="">
+        select operating system
+      </option>
+
+      <option value="windows">
+        Windows
+      </option>
+
+      <option value="linux">
+        Linux
+      </option>
+
+    </select>
+
+
+    <label class="field-label">
+      FLASHER VERSION
+    </label>
+
+    <input 
+      class="auth-input"
+      type="text"
+      id="flasher-version"
+      placeholder="e.g. 1.2.0">
+
+  </div>
+ 
+  <div class="upload-zone" 
+      id="flasher-drop-zone" 
+      onclick="document.getElementById('flasher-file').click()">
+
+
+    <input 
+      type="file" 
+      id="flasher-file">
+
+
+    <div class="upload-icon">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <rect 
+          x="6" 
+          y="30" 
+          width="36" 
+          height="4" 
+          rx="1" 
+          fill="#ff6b00" 
+          opacity=".4"/>
+
+        <rect 
+          x="6" 
+          y="36" 
+          width="36" 
+          height="4" 
+          rx="1" 
+          fill="#ff6b00" 
+          opacity=".2"/>
+
+        <path 
+          d="M24 6 L24 26 M14 16 L24 6 L34 16" 
+          stroke="#ff6b00" 
+          stroke-width="2.5"
+          stroke-linecap="square"/>
+
+      </svg>
+    </div>
+
+    <div class="upload-title">
+      DROP FLASHER FILE
+    </div>
+
+    <div class="upload-sub">
+      or click to browse · executable format only
+    </div>
+
+    <div class="upload-file-name" 
+        id="flasher-file-name-display"></div>
+
+  </div>
+
+  <div class="progress-wrap" id="flasher-progress-wrap">
+
+    <div class="progress-label">
+
+      <span id="flasher-progress-status">
+        ENCRYPTING & UPLOADING...
+      </span>
+
+      <span id="flasher-progress-pct">
+        0%
+      </span>
+
+    </div>
+
+
+    <div class="progress-bar">
+
+      <div class="progress-fill" 
+          id="flasher-progress-fill">
+      </div>
+
+    </div>
+
+  </div>
+
+  <button class="btn-upload" 
+          id="flasher-upload-btn" 
+          onclick="uploadFlasher()" 
+          disabled>
+
+    <span>
+      ⬡ &nbsp;ENCRYPT &amp; UPLOAD FLASHER
+    </span>
+
+  </button>
+
+  <!-- Flasher Library -->
+  <div class="section-header">
+    <span class="section-label">Flasher Library</span>
+    <div class="section-line"></div>
+  </div>
+
+  <div id="flasher-list-wrap"></div>
+
 </div>
+ 
+ 
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-  let adminToken = localStorage.getItem('admin_token') || '';
+  //let adminToken = localStorage.getItem('admin_token') || '';
 
   // ── Инициализация ─────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
-    if (adminToken) {
-      document.getElementById('token-input').value = adminToken;
-    }
+    // if (adminToken) {
+    //   document.getElementById('token-input').value = adminToken;
+    // }
     loadFirmwares();
   });
 
-  // ── Токен ─────────────────────────────────
-  function saveToken() {
-    adminToken = document.getElementById('token-input').value.trim();
-    localStorage.setItem('admin_token', adminToken);
-    toast('Token saved', 'ok');
-    loadFirmwares();
-  }
+  // // ── Токен ─────────────────────────────────
+  // function saveToken() {
+  //   adminToken = document.getElementById('token-input').value.trim();
+  //   localStorage.setItem('admin_token', adminToken);
+  //   toast('Token saved', 'ok');
+  //   loadFirmwares();
+  // }
 
-  document.getElementById('token-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveToken();
-  });
+  // document.getElementById('token-input').addEventListener('keydown', e => {
+  //   if (e.key === 'Enter') saveToken();
+  // });
 
   // ── Выбор файла ───────────────────────────
   document.getElementById('fw-file').addEventListener('change', function() {
@@ -139,7 +323,7 @@
   async function uploadFirmware() {
     const file = document.getElementById('fw-file').files[0];
     if (!file) { toast('Select a .bin file first', 'err'); return; }
-    if (!adminToken) { toast('Enter admin token first', 'err'); return; }
+    //if (!adminToken) { toast('Enter admin token first', 'err'); return; }
 
     const btn = document.getElementById('upload-btn');
     btn.disabled = true;
@@ -200,14 +384,14 @@
     });
 
     xhr.open('POST', '/api/admin/upload');
-    xhr.setRequestHeader('X-Admin-Token', adminToken);
+    //xhr.setRequestHeader('X-Admin-Token', adminToken);
     xhr.send(form);
   }
-
+ 
   // ── Список прошивок ───────────────────────
   async function loadFirmwares() {
     try {
-      const res  = await fetch('/api/firmwares');
+      const res = await fetch('/api/firmwares');
       const list = await res.json();
 
       document.getElementById('stat-count').textContent = list.length;
@@ -223,52 +407,370 @@
         return;
       }
 
+
       let rows = '';
+
       list.forEach(function(fw) {
+
         const nameParts = fw.name.split('.');
-        const ext  = nameParts.pop();
+        const ext = nameParts.pop();
         const base = nameParts.join('.');
+
         const sizeKb = (fw.size / 1024).toFixed(1);
+
+
+        const status = fw.is_current
+          ? '<span class="fw-tag current">CURRENT</span>'
+          : '<span class="fw-tag">AVAILABLE</span>';
+
+
+        const currentAction = fw.is_current
+          ? ''
+          : '<button class="btn-action" onclick="setCurrentFirmware(' + fw.id + ')">' +
+              '&#x2713; SET CURRENT' +
+            '</button>';
+
+
         rows +=
           '<tr>' +
-            '<td><div class="fw-name">' + base + '<span class="ext">.' + ext + '</span></div></td>' +
-            '<td><span class="fw-tag">ENCRYPTED</span></td>' +
-            '<td><span class="fw-size">' + sizeKb + ' KB</span></td>' +
-            '<td><span class="fw-date">' + fw.mod_time + '</span></td>' +
-            '<td><div class="fw-actions">' +
-              '<a class="btn-action" href="/api/firmwares/' + fw.name + '" download>&#x2193; DOWNLOAD</a>' +
-              '<button class="btn-action del" onclick="deleteFirmware(\'' + fw.name + '\')">&#x2715; DELETE</button>' +
-            '</div></td>' +
+
+            '<td>' +
+              status +
+            '</td>' +
+
+            '<td>' +
+              '<div class="fw-version">v' + fw.version + '</div>' +
+            '</td>' +
+
+            '<td>' +
+              '<div class="fw-name">' +
+                base +
+                '<span class="ext">.' + ext + '</span>' +
+              '</div>' +
+            '</td>' +
+
+            '<td>' +
+              '<span class="fw-size">' +
+                sizeKb + ' KB' +
+              '</span>' +
+            '</td>' +
+
+            '<td>' +
+              '<span class="fw-date">' +
+                fw.created_at +
+              '</span>' +
+            '</td>' +
+
+            '<td>' +
+              '<div class="fw-actions">' +
+
+                currentAction +
+
+                '<a class="btn-action" href="/api/firmwares/' + fw.id + '" download>' +
+                  '&#x2193; DOWNLOAD' +
+                '</a>' +
+
+                '<button class="btn-action del" onclick="deleteFirmware(' + fw.id + ')">' +
+                  '&#x2715; DELETE' +
+                '</button>' +
+
+              '</div>' +
+            '</td>' +
+
           '</tr>';
       });
 
+
       wrap.innerHTML =
         '<table class="fw-table">' +
-          '<thead><tr>' +
-            '<th>FILENAME</th>' +
-            '<th>STATUS</th>' +
-            '<th>SIZE</th>' +
-            '<th>UPLOADED</th>' +
-            '<th style="text-align:right">ACTIONS</th>' +
-          '</tr></thead>' +
-          '<tbody>' + rows + '</tbody>' +
+
+          '<thead>' +
+            '<tr>' +
+              '<th>STATUS</th>' +
+              '<th>VERSION</th>' +
+              '<th>FILENAME</th>' +
+              '<th>SIZE</th>' +
+              '<th>UPLOADED</th>' +
+              '<th style="text-align:right">ACTIONS</th>' +
+            '</tr>' +
+          '</thead>' +
+
+          '<tbody>' +
+            rows +
+          '</tbody>' +
+
         '</table>';
 
+
     } catch(e) {
+
       document.getElementById('fw-list-wrap').innerHTML =
-        '<div class="empty-state"><p>FAILED TO LOAD FIRMWARE LIST</p></div>';
+        '<div class="empty-state">' +
+          '<p>FAILED TO LOAD FIRMWARE LIST</p>' +
+        '</div>';
     }
   }
 
-  // ── Удаление ──────────────────────────────
-  async function deleteFirmware(name) {
-    if (!adminToken) { toast('Enter admin token first', 'err'); return; }
-    if (!confirm('Delete ' + name + '?')) return;
+// ── Удаление прошивки──────────────────────────────
+async function deleteFirmware(id) {
+  //if (!adminToken) { toast('Enter admin token first', 'err'); return; }
+  if (!confirm('Delete firmware with ID ' + id + '?')) return;
+
+  try {
+    const res = await fetch('/api/admin/deleteFirmware/' + id, {
+      method: 'DELETE'
+    });
+    const data = await res.json();
+    if (data.ok) {
+      toast('Deleted: ' + name, 'ok');
+      loadFirmwares();
+    } else {
+      toast('Error: ' + (data.error || 'unknown'), 'err');
+    }
+  } catch(e) {
+    toast('Network error', 'err');
+  }
+}
+
+// ── Загрузка флешера ─────────────────────
+async function uploadFlasher() {
+
+  const file = document.getElementById('flasher-file').files[0];
+  const os = document.getElementById('flasher-os').value;
+  const version = document.getElementById('flasher-version').value.trim();
+
+  if (!file) {
+    toast('Select a flasher file first', 'err');
+    return;
+  }
+
+  if (!os) {
+    toast('Select operating system first', 'err');
+    return;
+  }
+
+  if (!version) {
+    toast('Enter flasher version first', 'err');
+    return;
+  }
+
+  const btn = document.getElementById('flasher-upload-btn');
+  btn.disabled = true;
+
+  const prog = document.getElementById('flasher-progress-wrap');
+  const fill = document.getElementById('flasher-progress-fill');
+  const pct  = document.getElementById('flasher-progress-pct');
+  const pst  = document.getElementById('flasher-progress-status');
+
+  prog.classList.add('show');
+  pst.textContent = 'ENCRYPTING & UPLOADING...';
+
+  const xhr = new XMLHttpRequest();
+
+  const form = new FormData();
+
+  form.append('flasher', file);
+  form.append('os', os);
+  form.append('version', version);
+
+  xhr.upload.addEventListener('progress', e => {
+
+    if (e.lengthComputable) {
+
+      const p = Math.round(e.loaded / e.total * 100);
+
+      fill.style.width = p + '%';
+      pct.textContent = p + '%';
+
+    }
+
+  });
+
+  xhr.addEventListener('load', () => {
 
     try {
-      const res = await fetch('/api/admin/delete/' + encodeURIComponent(name), {
-        method: 'DELETE',
-        headers: { 'X-Admin-Token': adminToken }
+      const data = JSON.parse(xhr.responseText);
+      if (data.ok) {
+
+        fill.style.width = '100%';
+        pct.textContent = '100%';
+        pst.textContent = 'UPLOAD COMPLETE';
+        toast('Flasher uploaded: ' + data.file, 'ok');
+        loadFlashers();
+        setTimeout(() => {
+
+          prog.classList.remove('show');
+
+          fill.style.width = '0%';
+
+          document.getElementById('flasher-file').value = '';
+
+          document
+            .getElementById('flasher-file-name-display')
+            .classList.remove('show');
+
+          document.getElementById('flasher-version').value = '';
+          document.getElementById('flasher-os').value = '';
+          btn.disabled = true;
+
+        }, 1500);
+      } else {
+        toast('Error: ' + (data.error || 'unknown'), 'err');
+        prog.classList.remove('show');
+        btn.disabled = false;
+      }
+
+    } catch(e) {
+      toast('Server error', 'err');
+      prog.classList.remove('show');
+      btn.disabled = false;
+    }
+
+  });
+
+  xhr.addEventListener('error', () => {
+
+    toast('Network error', 'err');
+
+    prog.classList.remove('show');
+
+    btn.disabled = false;
+
+  });
+
+  xhr.open('POST', '/api/admin/upload_flasher');
+  xhr.send(form);
+}
+
+
+// ── Список флешеров ───────────────────────
+async function loadFlashers() {
+  try { 
+    const res = await fetch('/api/flashers');
+    const list = await res.json();
+ 
+    document.getElementById('flasher-stat-count').textContent = list.length;
+ 
+    const wrap = document.getElementById('flasher-list-wrap');
+ 
+    if (!list.length) {
+
+      wrap.innerHTML =
+        '<div class="empty-state">' +
+          '<div class="icon">&#x2B21;</div>' +
+          '<p>NO FLASHERS UPLOADED YET</p>' +
+        '</div>';
+
+      return;
+    }
+ 
+    let rows = '';
+ 
+    list.forEach(function(fl) {
+ 
+      const nameParts = fl.name.split('.');
+      const ext = nameParts.pop();
+      const base = nameParts.join('.');
+      const sizeKb = (fl.size / 1024).toFixed(1);
+
+      rows +=
+
+        '<tr>' +
+ 
+          '<td>' +
+            '<div class="fw-version">' +
+              'v' + fl.version +
+            '</div>' +
+          '</td>' +
+ 
+          '<td>' +
+            '<div class="fw-name">' +
+              base +
+              '<span class="ext">.' + ext + '</span>' +
+            '</div>' +
+          '</td>' +
+ 
+          '<td>' +
+            '<span class="fw-tag">' +
+              fl.os.toUpperCase() +
+            '</span>' +
+          '</td>' +
+ 
+          '<td>' +
+            '<span class="fw-size">' +
+              sizeKb + ' KB' +
+            '</span>' +
+          '</td>' +
+ 
+          '<td>' +
+            '<span class="fw-date">' +
+              fl.created_at +
+            '</span>' +
+          '</td>' +
+ 
+
+          '<td>' +
+            '<div class="fw-actions">' +
+
+
+              '<a class="btn-action" href="/api/flashers/' + fl.id + '" download>' +
+                '&#x2193; DOWNLOAD' +
+              '</a>' +
+  
+              '<button class="btn-action del" onclick="deleteFlasher(' + fl.id + ')">' +
+                '&#x2715; DELETE' +
+              '</button>' +
+
+
+            '</div>' +
+          '</td>' +
+ 
+        '</tr>';
+
+    });
+ 
+
+    wrap.innerHTML =
+
+      '<table class="fw-table">' +
+ 
+        '<thead>' +
+          '<tr>' +
+            '<th>VERSION</th>' +
+            '<th>FILENAME</th>' +
+            '<th>OS</th>' +
+            '<th>SIZE</th>' +
+            '<th>UPLOADED</th>' +
+            '<th style="text-align:right">ACTIONS</th>' +
+          '</tr>' +
+        '</thead>' +
+ 
+        '<tbody>' +
+          rows +
+        '</tbody>' +
+ 
+
+      '</table>';
+ 
+
+  } catch(e) {
+ 
+    document.getElementById('flasher-list-wrap').innerHTML =
+      '<div class="empty-state">' +
+        '<p>FAILED TO LOAD FLASHER LIST</p>' +
+      '</div>';
+
+  }
+}
+
+// ------------------ DELETE FLASHER -----------------------------
+  async function deleteFlasher(id) {
+    //if (!adminToken) { toast('Enter admin token first', 'err'); return; }
+    if (!confirm('Delete flasher with ID ' + id + '?')) return;
+
+    try {
+      const res = await fetch('/api/admin/deleteFlasher/' + id, {
+        method: 'DELETE'
       });
       const data = await res.json();
       if (data.ok) {
@@ -281,6 +783,7 @@
       toast('Network error', 'err');
     }
   }
+
 
   // ── Toast уведомления ─────────────────────
   let toastTimer;
