@@ -1,5 +1,6 @@
 {{ define "styles" }}
 <!-- <link rel="stylesheet" href="css/business.css"> -->
+<!-- <link rel="stylesheet" href="css/business.css">  -->
 {{ end }}
 
 
@@ -30,43 +31,9 @@
       operating mode — for every engine condition and load.
     </p>
 
-    <div class="hero-buttons">
-
-      <!--  -->
-
-          <div class="download-wrapper">
-
-            <button class="btn-primary" id="downloadBtn">
-              ↓ DOWNLOAD FLASHER
-            </button>
-
-            <div class="download-panel" id="downloadPanel">
-
-              <a href="/downloads/flasher-windows.exe" class="download-item">
-                <span class="download-icon">⊞</span>
-                <span>
-                  <strong>Windows</strong>
-                  <small>Windows 10 / 11 · x64</small>
-                </span>
-              </a>
-
-              <a href="/downloads/flasher-linux.AppImage" class="download-item">
-                <span class="download-icon">🐧</span>
-                <span>
-                  <strong>Linux</strong>
-                  <small>Ubuntu / Debian · x64</small>
-                </span>
-              </a>
-
-            </div>
-
-          </div>
-
-      <!--  -->
-      <!-- <a href="/download_flasher" class="btn-primary">
-        ↓ DOWNLOAD FLASHER
-      </a> -->
-
+    <div class="hero-buttons"> 
+        
+      {{ template "download_flasher_btn" . }}
 
       <a href="/tech" class="btn-secondary" data-transition="slide-left">
         TECH OVERVIEW →
@@ -242,36 +209,11 @@
   <h2>UPGRADE YOUR IGNITION</h2>
   <p>Precise. Stable. Fully programmable ignition control for modern engines. Download the flasher tool and get started today.</p>
   <div class="hero-buttons">
-    <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+    {{ template "download_flasher_btn" . }} 
     <a href="/tech" class="btn-secondary" data-transition="slide-left">TECH OVERVIEW →</a>
   </div>
 </section>
 
 </div>
-<script>
-
-const downloadBtn = document.getElementById("downloadBtn");
-const downloadPanel = document.getElementById("downloadPanel");
-
-
-downloadBtn.addEventListener("click", () => {
-
-  downloadPanel.classList.toggle("open");
-
-});
-
-
-// document.querySelectorAll("a").forEach(link => {
-//     link.addEventListener("click", e => {
-//         e.preventDefault();
-
-//         document.body.classList.add("fade-out");
-
-//         setTimeout(() => {
-//             window.location = link.href;
-//         }, 250);
-//     });
-// });
-  
-</script>
+ 
 {{ end }}

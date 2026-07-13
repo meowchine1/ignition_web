@@ -1,6 +1,5 @@
-{{ define "styles" }}
-<link rel="stylesheet" href="css/business.css">
-<link rel="stylesheet" href="css/tech.css">
+{{ define "styles" }} 
+<!-- <link rel="stylesheet" href="css/tech.css"> -->
 {{ end }}
 
 
@@ -15,7 +14,7 @@
 
 <section class="tech-hero">
   <div class="tech-hero-left">
-    <div class="hero-eyebrow">Architecture · v2.0</div>
+    <div class="hero-eyebrow">Architecture</div>
     <h1 class="tech-title">
       HOW THE<br>
       <span class="fire">SYSTEM</span><br>
@@ -27,7 +26,9 @@
       Every spark parameter is under software control.
     </p>
     <div class="hero-buttons">
-      <a href="/download_flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+      <!-- <a href="/download_flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a> -->
+
+      {{ template "download_flasher_btn" . }}
       <a href="/" class="btn-secondary" data-transition="slide-left">← BACK TO OVERVIEW  </a>
     </div>
   </div>
@@ -213,11 +214,11 @@
   <h2>READY TO INTEGRATE?</h2>
   <p>Download the flasher tool, explore the firmware source or contact our engineering team for integration support.</p>
   <div class="hero-buttons">
-    <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a>
+    <!-- <a href="/download/flasher" class="btn-primary">↓ DOWNLOAD FLASHER</a> -->
+     {{ template "download_flasher_btn" . }}
     <a href="/" class="btn-secondary">← PRODUCT OVERVIEW</a>
   </div>
 </section>
 
-</div>
-<script></script>
+</div> 
 {{ end }}

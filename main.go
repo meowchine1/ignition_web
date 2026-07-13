@@ -221,7 +221,7 @@ func handleDeleteFlasher (cfg *config.Config) http.HandlerFunc {
 
  func main() {
 
-	fmt.Println("BUILD MARKER: 2026-07-05-NEW")
+	fmt.Println("SERVER STARTED FROM CURRENT SOURCE")
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -237,6 +237,7 @@ func handleDeleteFlasher (cfg *config.Config) http.HandlerFunc {
 	base := template.Must(template.ParseFiles(
 		"ui/templates/layout.html",
 		"ui/templates/header.html",
+    "ui/templates/download_flasher_btn.html",
 	))
 
 	businessTmpl := template.Must(base.Clone())
