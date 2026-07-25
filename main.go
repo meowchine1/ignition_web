@@ -7,16 +7,16 @@ import (
 	// "crypto/rand"
 	// "crypto/sha256"
 	// "encoding/binary"
-	"encoding/json"
+	//"encoding/json"
 	"fmt"
-	"io"
+	//"io"
 	"log"
 	"net/http"
   	"html/template"
 	"os"
-	"path/filepath"
-	"strings"
-	"time" 
+	//"path/filepath"
+	//"strings"
+	//"time" 
   	"flasher/config" 
   	"flasher/handlers"
 	"flasher/db" 
@@ -96,16 +96,15 @@ import (
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	})
+ 
+	mux.HandleFunc("/api/firmwares", handlers.HandleFirmwares(cfg, repo))  // GET
+	mux.HandleFunc("/api/firmware", handlers.HandleFirmware(cfg, repo))	   // POST
+	mux.HandleFunc("/api/firmware/", handlers.HandleFirmware(cfg, repo))   // GET DELETE
 
-	mux.HandleFunc("/list_firmwares", handleListFirmwares(cfg, repo))
-	mux.HandleFunc("/download_firmware/", handleDownloadFirmware(cfg, repo))
-	mux.HandleFunc("/upload_firmware", handleUploadFirmware(cfg, repo))
-	mux.HandleFunc("/delete_firmware/", handleDeleteFirmware(cfg, repo))
-
-	mux.HandleFunc("/list_flashers", handleListFlashers(cfg, repo))
-	mux.HandleFunc("/download_flasher/", handleDownloadFlasher(cfg, repo))
-	mux.HandleFunc("/upload_flasher", handleUploadFlasher(cfg, repo))
-	mux.HandleFunc("/delete_flasher/", handleDeleteFlasher(cfg, repo))
+	mux.HandleFunc("/api/flashers", handlers.HandleFlashers(cfg, repo))   // GET
+	mux.HandleFunc("/api/flasher", handlers.HandleFlasher(cfg, repo))	  // POST
+	mux.HandleFunc("/api/flasher/", handlers.HandleFlasher(cfg, repo))	  // GET DELETE
+	mux.HandleFunc("/api/flasher/current", handlers.HandleCurrentFlasher(cfg, repo)) // GET
 
 	fmt.Printf("IgnitionFlash Admin running on %s\n", cfg.ListenAddr)
 

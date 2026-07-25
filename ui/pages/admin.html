@@ -382,7 +382,7 @@
       btn.disabled = false;
     });
 
-    xhr.open('POST', '/api/admin/upload');
+    xhr.open('POST', '/api/firmware');
     //xhr.setRequestHeader('X-Admin-Token', adminToken);
     xhr.send(form);
   }
@@ -465,7 +465,7 @@
 
                 currentAction +
 
-                '<a class="btn-action" href="/api/firmwares/' + fw.id + '" download>' +
+                '<a class="btn-action" href="/api/firmware?id=' + fw.id + '" download>' +
                   '&#x2193; DOWNLOAD' +
                 '</a>' +
 
@@ -516,7 +516,7 @@ async function deleteFirmware(id) {
   if (!confirm('Delete firmware with ID ' + id + '?')) return;
 
   try {
-    const res = await fetch('/api/admin/deleteFirmware/' + id, {
+    const res = await fetch('/api/firmware?id=' + id, {
       method: 'DELETE'
     });
     const data = await res.json();
@@ -637,7 +637,7 @@ async function uploadFlasher() {
 
   });
 
-  xhr.open('POST', '/api/admin/upload_flasher');
+  xhr.open('POST', '/api/flasher');
   xhr.send(form);
 }
 
@@ -712,7 +712,7 @@ async function loadFlashers() {
             '<div class="fw-actions">' +
 
 
-              '<a class="btn-action" href="/api/flashers/' + fl.id + '" download>' +
+              '<a class="btn-action" href="/api/flasher?id=' + fl.id + '" download>' +
                 '&#x2193; DOWNLOAD' +
               '</a>' +
   
@@ -768,7 +768,7 @@ async function loadFlashers() {
     if (!confirm('Delete flasher with ID ' + id + '?')) return;
 
     try {
-      const res = await fetch('/api/admin/deleteFlasher/' + id, {
+      const res = await fetch('/api/flasher?id=' + id, {
         method: 'DELETE'
       });
       const data = await res.json();

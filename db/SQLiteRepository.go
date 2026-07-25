@@ -16,7 +16,6 @@ type SQLiteRepository struct {
 	conn *sql.DB
 }
 
-
 // =========================
 // Constructor
 // =========================
@@ -60,6 +59,15 @@ func NewSQLiteRepository(path string) (Repository, error) {
 	}, nil
 }
 
+
+func (r *SQLiteRepository) Close() error {
+	if r.conn == nil {
+		return nil
+	}
+
+	return r.conn.Close()
+}
+
  
 func configureSQLite(conn *sql.DB) error {
 
@@ -87,10 +95,6 @@ func initSchema(conn *sql.DB) error {
 	_, err := conn.Exec(schemaSQL)
 
 	return err
-}
-
-func (r *SQLiteRepository) Close() error {
-	return r.conn.Close()
 }
  
 // =========================

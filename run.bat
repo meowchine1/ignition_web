@@ -16,6 +16,7 @@ if not exist firmware-server.exe (
 )
 
 echo Building...
+set CGO_ENABLED=1
 go build -o firmware-server.exe
 
 if errorlevel 1 (
