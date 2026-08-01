@@ -5,8 +5,12 @@ import (
 	"flasher/config"
 	"flasher/db"
 	"net/http"
-	"path"
-	"strconv"
+	//"path"
+	//"strconv"
+	"os" 
+	"io"
+	"path/filepath"
+
 )
 
 func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
@@ -17,11 +21,7 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 		case http.MethodGet:
 
-			id, err := strconv.ParseInt(
-				path.Base(r.URL.Path),
-				10,
-				64,
-			)
+			id, err := getIDFromQuery(r)
 
 			if err != nil {
 				http.Error(
@@ -31,7 +31,6 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				)
 				return
 			}
-
 
 			flasher, err := repo.GetFlasher(id)
 			if err != nil {
@@ -43,7 +42,6 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			w.Header().Set(
 				"Content-Type",
 				"application/json",
@@ -51,32 +49,68 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 			json.NewEncoder(w).Encode(flasher)
 
-
 		case http.MethodPost:
 
-			// if !checkAdmin(r, cfg) {
-			// 	http.Error(w, "unauthorized", http.StatusUnauthorized)
-			// 	return
-			// }
+			const maxUploadSize = 100 << 20 // 100 MB
 
+			if err := r.ParseMultipartForm(maxUploadSize); err != nil {
+				http.Error(w, "invalid multipart form", http.StatusBadRequest)
+				return
+			}
 
-			// TODO:
-			// r.ParseMultipartForm()
-			// сохранить файл
-			// создать db.FlasherRecord
-			// repo.AddFlasher()
+			file, header, err := r.FormFile("flasher")
+			if err != nil {
+				http.Error(w, "flasher file is required", http.StatusBadRequest)
+				return
+			}
+			defer file.Close()
+
+			if err := os.MkdirAll(cfg.FlasherDir, 0755); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			filename := filepath.Base(header.Filename)
+			path := filepath.Join(cfg.FlasherDir, filename)
+
+			dst, err := os.Create(path)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			record := db.FlasherRecord{
+				Name: filename,
+				Path: path,
+			}
+
+			if err := repo.AddFlasher(record); err != nil {
+				os.Remove(path)
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusCreated)
+
+			json.NewEncoder(w).Encode(map[string]any{
+				"ok":   true,
+				"file": filename,
+			})
 
 
 			w.WriteHeader(http.StatusCreated)
 
 
 		case http.MethodDelete:
-
-			id, err := strconv.ParseInt(
-				path.Base(r.URL.Path),
-				10,
-				64,
-			)
+ 
+			id, err := getIDFromQuery(r)
 
 			if err != nil {
 				http.Error(
@@ -87,13 +121,6 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
-			// if !checkAdmin(r, cfg) {
-			// 	http.Error(w, "unauthorized", http.StatusUnauthorized)
-			// 	return
-			// }
-
-
 			if err := repo.DeleteFlasher(id); err != nil {
 				http.Error(
 					w,
@@ -103,9 +130,7 @@ func HandleFlasher(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			w.WriteHeader(http.StatusNoContent)
-
 
 		default:
 

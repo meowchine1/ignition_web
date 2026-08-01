@@ -4,8 +4,8 @@ import (
 	"flasher/config"
 	"flasher/db"
 	"net/http"
-	"path"
-	"strconv"
+	//"path"
+	//"strconv"
 	"strings"
 	"io" 
 	"path/filepath"
@@ -24,13 +24,10 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 		case http.MethodGet:
 
-			id, err := strconv.ParseInt(
-				path.Base(r.URL.Path),
-				10,
-				64,
-			)
+			id, err := getIDFromQuery(r)
 
 			if err != nil {
+				log.Printf("err = %d id = %d", err, id)
 				http.Error(
 					w,
 					"bad id",
@@ -60,16 +57,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 		case http.MethodPost:
 
-			if !checkAdmin(r, cfg) {
-				http.Error(
-					w,
-					"unauthorized",
-					http.StatusUnauthorized,
-				)
-				return
-			}
-
-
 			if err := r.ParseMultipartForm(10 << 20); err != nil {
 				http.Error(
 					w,
@@ -79,6 +66,16 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
+			version := r.FormValue("version")
+
+			if version == "" {
+				http.Error(
+					w,
+					"version required",
+					http.StatusBadRequest,
+				)
+				return
+			}
 
 			file, header, err := r.FormFile("firmware")
 			if err != nil {
@@ -92,7 +89,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 			defer file.Close()
 
-
 			if !strings.HasSuffix(header.Filename, ".bin") {
 				http.Error(
 					w,
@@ -101,7 +97,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				)
 				return
 			}
-
 
 			raw, err := io.ReadAll(file)
 			if err != nil || len(raw) == 0 {
@@ -113,6 +108,7 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
+			sha256sum := calculateSHA256(raw)
 
 			encrypted, err := encryptAndSign(raw, cfg)
 			if err != nil {
@@ -124,6 +120,7 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
+			originalName := filepath.Base(header.Filename)
 
 			filename := filepath.Base(header.Filename) + ".enc"
 
@@ -131,7 +128,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				cfg.FirmwaresDir,
 				filename,
 			)
-
 
 			if err := os.WriteFile(savePath, encrypted, 0644); err != nil {
 				http.Error(
@@ -142,12 +138,15 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			record := db.FirmwareRecord{
 				Path: savePath,
-				// остальные поля по твоей структуре
+				Version: version,
+				CreatedAt: time.Now(),
+				SHA256: sha256sum,
+				IsCurrent: false,
+				Size: int64(len(encrypted)),
+				Name: originalName,
 			}
-
 
 			if err := repo.AddFirmware(record); err != nil {
 				http.Error(
@@ -158,7 +157,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			log.Printf(
 				"[%s] uploaded %s (%d -> %d bytes)",
 				time.Now().Format("15:04:05"),
@@ -167,20 +165,14 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				len(encrypted),
 			)
 
-
 			json.NewEncoder(w).Encode(map[string]any{
 				"ok":   true,
 				"file": filename,
 			})
 
-
 		case http.MethodDelete:
 
-			id, err := strconv.ParseInt(
-				path.Base(r.URL.Path),
-				10,
-				64,
-			)
+			id, err := getIDFromQuery(r)
 
 			if err != nil {
 				http.Error(
@@ -190,7 +182,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				)
 				return
 			}
-
 
 			firmware, err := repo.GetFirmware(id)
 			if err != nil {
@@ -202,7 +193,6 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			if err := repo.DeleteFirmware(id); err != nil {
 				http.Error(
 					w,
@@ -212,11 +202,9 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-
 			_ = os.Remove(firmware.Path)
 
 			w.WriteHeader(http.StatusNoContent)
-
 
 		default:
 

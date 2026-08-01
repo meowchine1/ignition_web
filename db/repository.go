@@ -7,6 +7,7 @@ type Repository interface {
 	DeleteFirmware(id int64) error
 	UpdateFirmware(firmware FirmwareRecord) error
 	GetFirmware(id int64) (*FirmwareRecord, error)
+	FirmwareExists(filename string) (bool, error)
 
 	ListFirmwares() ([]FirmwareRecord, error)
 
@@ -19,6 +20,7 @@ type Repository interface {
 	DeleteFlasher(id int64) error
 	UpdateFlasher(flasher FlasherRecord) error
 	GetFlasher(id int64) (*FlasherRecord, error)
+	FlasherExists(filename string) (bool, error)
 
 	ListFlashers() ([]FlasherRecord, error)
 

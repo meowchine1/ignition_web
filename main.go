@@ -1,22 +1,11 @@
 package main
 
-import (
-	// "crypto/aes"
-	// "crypto/cipher"
-	//"crypto/hmac"
-	// "crypto/rand"
-	// "crypto/sha256"
-	// "encoding/binary"
-	//"encoding/json"
-	"fmt"
-	//"io"
+import ( 
+	"fmt" 
 	"log"
 	"net/http"
   	"html/template"
-	"os"
-	//"path/filepath"
-	//"strings"
-	//"time" 
+	"os" 
   	"flasher/config" 
   	"flasher/handlers"
 	"flasher/db" 
@@ -29,8 +18,7 @@ import (
 	if err != nil {
 		log.Fatal(err)
 	}
- 
-
+  
 	repo, err := db.NewSQLiteRepository("./database.sqlite3")
 	if err != nil {
 		log.Fatal(err)
@@ -107,6 +95,7 @@ import (
 	mux.HandleFunc("/api/flasher/current", handlers.HandleCurrentFlasher(cfg, repo)) // GET
 
 	fmt.Printf("IgnitionFlash Admin running on %s\n", cfg.ListenAddr)
+
 
 	if err := http.ListenAndServe(cfg.ListenAddr, mux); err != nil {
 	log.Println(err)

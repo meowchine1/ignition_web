@@ -23,27 +23,13 @@
       <div class="stat-value" style="font-size:16px;padding-top:6px;color:var(--spark)">HMAC-SHA256</div>
     </div>
   </div>
-
-  <!-- Auth
-  <div class="section-header">
-    <span class="section-label">Admin Token</span>
-    <div class="section-line"></div>
-  </div>
-
-  <div class="auth-card">
-    <label>TOKEN</label>
-    <input class="auth-input" type="password" id="token-input"
-           placeholder="enter admin token...">
-    <button class="btn-auth" onclick="saveToken()">AUTHENTICATE</button>
-  </div> -->
   
   <!-- Upload Firmware -->
   <div class="section-header">
     <span class="section-label">Upload Firmware</span>
     <div class="section-line"></div>
   </div>
-
-
+ 
   <div class="upload-meta">
 
     <label class="field-label">
@@ -57,8 +43,7 @@
       placeholder="e.g. 1.2.0">
 
   </div>
-
-
+ 
   <div class="upload-zone" id="drop-zone" onclick="document.getElementById('fw-file').click()">
 
     <input type="file" id="fw-file" accept=".bin">
@@ -321,9 +306,10 @@
   // ── Загрузка прошивки ─────────────────────
   async function uploadFirmware() {
     const file = document.getElementById('fw-file').files[0];
-    if (!file) { toast('Select a .bin file first', 'err'); return; }
-    //if (!adminToken) { toast('Enter admin token first', 'err'); return; }
-
+    if (!file) { toast('Select a .bin file first', 'err'); return; } 
+ 
+    const version = document.getElementById('flasher-version').value.trim();
+  
     const btn = document.getElementById('upload-btn');
     btn.disabled = true;
 
@@ -339,6 +325,7 @@
     const xhr = new XMLHttpRequest();
     const form = new FormData();
     form.append('firmware', file);
+    form.append('version', version);
 
     xhr.upload.addEventListener('progress', e => {
       if (e.lengthComputable) {
@@ -387,147 +374,149 @@
     xhr.send(form);
   }
  
-  // ── Список прошивок ───────────────────────
-  async function loadFirmwares() {
-    try {
-      const res = await fetch('/api/firmwares');
-      const list = await res.json();
+ 
+// ── Список прошивок ───────────────────────
+async function loadFirmwares() {
+  try {
+    const res = await fetch('/api/firmwares');
+    const list = await res.json();
 
-      document.getElementById('stat-count').textContent = list.length;
+    document.getElementById('stat-count').textContent = list.length;
 
-      const wrap = document.getElementById('fw-list-wrap');
+    const wrap = document.getElementById('fw-list-wrap');
 
-      if (!list.length) {
-        wrap.innerHTML =
-          '<div class="empty-state">' +
-            '<div class="icon">&#x2B21;</div>' +
-            '<p>NO FIRMWARES UPLOADED YET</p>' +
-          '</div>';
-        return;
-      }
-
-
-      let rows = '';
-
-      list.forEach(function(fw) {
-
-        const nameParts = fw.name.split('.');
-        const ext = nameParts.pop();
-        const base = nameParts.join('.');
-
-        const sizeKb = (fw.size / 1024).toFixed(1);
-
-
-        const status = fw.is_current
-          ? '<span class="fw-tag current">CURRENT</span>'
-          : '<span class="fw-tag">AVAILABLE</span>';
-
-
-        const currentAction = fw.is_current
-          ? ''
-          : '<button class="btn-action" onclick="setCurrentFirmware(' + fw.id + ')">' +
-              '&#x2713; SET CURRENT' +
-            '</button>';
-
-
-        rows +=
-          '<tr>' +
-
-            '<td>' +
-              status +
-            '</td>' +
-
-            '<td>' +
-              '<div class="fw-version">v' + fw.version + '</div>' +
-            '</td>' +
-
-            '<td>' +
-              '<div class="fw-name">' +
-                base +
-                '<span class="ext">.' + ext + '</span>' +
-              '</div>' +
-            '</td>' +
-
-            '<td>' +
-              '<span class="fw-size">' +
-                sizeKb + ' KB' +
-              '</span>' +
-            '</td>' +
-
-            '<td>' +
-              '<span class="fw-date">' +
-                fw.created_at +
-              '</span>' +
-            '</td>' +
-
-            '<td>' +
-              '<div class="fw-actions">' +
-
-                currentAction +
-
-                '<a class="btn-action" href="/api/firmware?id=' + fw.id + '" download>' +
-                  '&#x2193; DOWNLOAD' +
-                '</a>' +
-
-                '<button class="btn-action del" onclick="deleteFirmware(' + fw.id + ')">' +
-                  '&#x2715; DELETE' +
-                '</button>' +
-
-              '</div>' +
-            '</td>' +
-
-          '</tr>';
-      });
-
-
+    if (!list.length) {
       wrap.innerHTML =
-        '<table class="fw-table">' +
-
-          '<thead>' +
-            '<tr>' +
-              '<th>STATUS</th>' +
-              '<th>VERSION</th>' +
-              '<th>FILENAME</th>' +
-              '<th>SIZE</th>' +
-              '<th>UPLOADED</th>' +
-              '<th style="text-align:right">ACTIONS</th>' +
-            '</tr>' +
-          '</thead>' +
-
-          '<tbody>' +
-            rows +
-          '</tbody>' +
-
-        '</table>';
-
-
-    } catch(e) {
-
-      document.getElementById('fw-list-wrap').innerHTML =
         '<div class="empty-state">' +
-          '<p>FAILED TO LOAD FIRMWARE LIST</p>' +
+          '<div class="icon">&#x2B21;</div>' +
+          '<p>NO FIRMWARES UPLOADED YET</p>' +
         '</div>';
+      return;
     }
-  }
 
-// ── Удаление прошивки──────────────────────────────
+    let rows = '';
+
+    list.forEach(function(fw) {
+
+      const nameParts = fw.Name.split('.');
+      const ext = nameParts.pop();
+      const base = nameParts.join('.');
+
+      const sizeKb = (fw.Size / 1024).toFixed(1);
+
+      const status = fw.IsCurrent
+        ? '<span class="fw-tag current">CURRENT</span>'
+        : '<span class="fw-tag">AVAILABLE</span>';
+
+      const currentAction = fw.IsCurrent
+        ? ''
+        : '<button class="btn-action" onclick="setCurrentFirmware(' + fw.ID + ')">' +
+            '&#x2713; SET CURRENT' +
+          '</button>';
+
+      rows +=
+        '<tr>' +
+
+          '<td>' +
+            status +
+          '</td>' +
+
+          '<td>' +
+            '<div class="fw-version">v' + fw.Version + '</div>' +
+          '</td>' +
+
+          '<td>' +
+            '<div class="fw-name">' +
+              base +
+              '<span class="ext">.' + ext + '</span>' +
+            '</div>' +
+          '</td>' +
+
+          '<td>' +
+            '<span class="fw-size">' +
+              sizeKb + ' KB' +
+            '</span>' +
+          '</td>' +
+
+          '<td>' +
+            '<span class="fw-date">' +
+              fw.CreatedAt +
+            '</span>' +
+          '</td>' +
+
+          '<td>' +
+            '<div class="fw-actions">' +
+
+              currentAction +
+
+              '<a class="btn-action" href="/api/firmware?id=' + fw.ID + '" download>' +
+                '&#x2193; DOWNLOAD' +
+              '</a>' +
+
+              '<button class="btn-action del" onclick="deleteFirmware(' + fw.ID + ')">' +
+                '&#x2715; DELETE' +
+              '</button>' +
+
+            '</div>' +
+          '</td>' +
+
+        '</tr>';
+    });
+
+    wrap.innerHTML =
+      '<table class="fw-table">' +
+
+        '<thead>' +
+          '<tr>' +
+            '<th>STATUS</th>' +
+            '<th>VERSION</th>' +
+            '<th>FILENAME</th>' +
+            '<th>SIZE</th>' +
+            '<th>UPLOADED</th>' +
+            '<th style="text-align:right">ACTIONS</th>' +
+          '</tr>' +
+        '</thead>' +
+
+        '<tbody>' +
+          rows +
+        '</tbody>' +
+
+      '</table>';
+
+  } catch(e) {
+
+    console.error('Failed to load firmware list:', e);
+
+    document.getElementById('fw-list-wrap').innerHTML =
+      '<div class="empty-state">' +
+        '<p>FAILED TO LOAD FIRMWARE LIST</p>' +
+      '</div>';
+  }
+}
+ 
+ 
+// ── Удаление прошивки ──────────────────────────────
 async function deleteFirmware(id) {
-  //if (!adminToken) { toast('Enter admin token first', 'err'); return; }
   if (!confirm('Delete firmware with ID ' + id + '?')) return;
 
   try {
     const res = await fetch('/api/firmware?id=' + id, {
       method: 'DELETE'
     });
-    const data = await res.json();
-    if (data.ok) {
-      toast('Deleted: ' + name, 'ok');
-      loadFirmwares();
-    } else {
-      toast('Error: ' + (data.error || 'unknown'), 'err');
+
+    if (!res.ok) {
+      const error = await res.text();
+      throw new Error(error || 'HTTP ' + res.status);
     }
-  } catch(e) {
-    toast('Network error', 'err');
+
+    toast('Firmware deleted', 'ok');
+
+    // Перерисовать таблицу
+    await loadFirmwares();
+
+  } catch (e) {
+    console.error('Delete firmware failed:', e);
+    toast('Delete error: ' + e.message, 'err');
   }
 }
 

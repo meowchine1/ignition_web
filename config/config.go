@@ -1,56 +1,35 @@
 package config
 
-import (
-	"encoding/hex"
-	"fmt"
-	"os"
-
-	"github.com/joho/godotenv"
-)
-
 type Config struct {
 	ListenAddr   string
 	FirmwaresDir string
+	FlasherDir string
 	AdminToken   string
 	AESKey       []byte
 	HMACKey      []byte
 }
 
 func Load() (*Config, error) {
-
-	// только для локальной разработки
-	_ = godotenv.Load()
-
 	cfg := &Config{
-		ListenAddr:   os.Getenv("LISTEN_ADDR"),
-		FirmwaresDir: os.Getenv("FIRMWARES_DIR"),
-		AdminToken:   os.Getenv("ADMIN_TOKEN"),
-	}
+		ListenAddr:   "0.0.0.0:8200",
+		FirmwaresDir: "./firmwares",
+		FlasherDir: "./flashers",
+		AdminToken:   "super_secret_admin_token",
+ 
+		AESKey: []byte{
+			0x00, 0x01, 0x02, 0x03,
+			0x04, 0x05, 0x06, 0x07,
+			0x08, 0x09, 0x0A, 0x0B,
+			0x0C, 0x0D, 0x0E, 0x0F,
+		},
 
-	if cfg.ListenAddr == "" {
-		cfg.ListenAddr = "0.0.0.0:8080"
+		HMACKey: []byte{
+			0x10, 0x11, 0x12, 0x13,
+			0x14, 0x15, 0x16, 0x17,
+			0x18, 0x19, 0x1A, 0x1B,
+			0x1C, 0x1D, 0x1E, 0x1F,
+		},
 	}
-
-	if cfg.FirmwaresDir == "" {
-		cfg.FirmwaresDir = "./firmwares"
-	}
-
-	if cfg.AdminToken == "" {
-		return nil, fmt.Errorf("ADMIN_TOKEN is required")
-	}
-
-	aesKey, err := hex.DecodeString(os.Getenv("AES_KEY"))
-	if err != nil {
-		return nil, fmt.Errorf("invalid AES_KEY: %w", err)
-	}
-
-	hmacKey, err := hex.DecodeString(os.Getenv("HMAC_KEY"))
-	if err != nil {
-		return nil, fmt.Errorf("invalid HMAC_KEY: %w", err)
-	}
-
-	cfg.AESKey = aesKey
-	cfg.HMACKey = hmacKey
 
 	return cfg, nil
 }

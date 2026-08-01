@@ -619,7 +619,46 @@ func (r *SQLiteRepository) CountFlashers() (int, error) {
 
 	return count, nil
 }
- 
+
+
+func (r *SQLiteRepository) FirmwareExists(filename string) (bool, error) {
+	var exists bool
+
+	err := r.conn.QueryRow(
+		`SELECT EXISTS(
+			SELECT 1 
+			FROM firmware 
+			WHERE name = ?
+		)`,
+		filename,
+	).Scan(&exists)
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
+func (r *SQLiteRepository) FlasherExists(filename string) (bool, error) {
+	var exists bool
+
+	err := r.conn.QueryRow(
+		`SELECT EXISTS(
+			SELECT 1 
+			FROM flasher 
+			WHERE name = ?
+		)`,
+		filename,
+	).Scan(&exists)
+
+	if err != nil {
+		return false, err
+	}
+
+	return exists, nil
+}
+
 // =========================
 // Helpers
 // =========================
