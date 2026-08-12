@@ -403,3 +403,35 @@
   .container > *:nth-child(3) { animation-delay: .10s; }
   .container > *:nth-child(4) { animation-delay: .15s; }
   .container > *:nth-child(5) { animation-delay: .20s; }
+
+/* ── Разделитель между блоком прошивок и блоком флешера ── */
+.section-divider {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 64px;
+  margin: 56px 0;
+  background: var(--panel);
+  border-top: 1px solid var(--border2);
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.section-divider-mark {
+  width: 16px;
+  height: 16px;
+  background: var(--spark);
+  transform: rotate(45deg);
+  box-shadow: 0 0 18px 4px rgba(255,107,0,.55);
+}
+
+@media (max-width: 700px) {
+  .section-divider { height: 48px; margin: 40px 0; }
+  .section-divider-mark { width: 12px; height: 12px; }
+}
+
+.flasher-section {
+  padding-top: 0;
+}

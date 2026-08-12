@@ -15,19 +15,17 @@ const (
 type FirmwareRecord struct {
 	ID        int64
 	Name      string
-	Size      int64
-	Version   string
+	Size      int64 
 	SHA256    string
 	Path      string
-	IsCurrent bool
+	IsAvailable bool
 	CreatedAt time.Time
 }
 
 type FlasherRecord struct {
 	ID        int64
 	Name      string
-	OS        string
-	Version   string
+	OS        string 
 	Size      int64
 	SHA256    string
 	Path      string

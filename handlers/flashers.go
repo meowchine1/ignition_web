@@ -12,38 +12,54 @@ func HandleFlashers(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 		switch r.Method {
 
-		case http.MethodGet:
+			case http.MethodGet:
 
-			flashers, err := repo.ListFlashers()
-			if err != nil {
-				http.Error(
-					w,
-					err.Error(),
-					http.StatusInternalServerError,
+				osStr := r.URL.Query().Get("os")
+
+				var (
+					flashers []db.FlasherRecord
+					err      error
 				)
-				return
-			}
 
+				if osStr == "" {
 
-			if flashers == nil {
-				flashers = []db.FlasherRecord{}
-			}
+					// Полный список
+					flashers, err = repo.ListFlashers()
 
+				} else {
 
-			w.Header().Set(
-				"Content-Type",
-				"application/json",
-			)
+					// Список для конкретной ОС
+					flashers, err = repo.ListFlashersByOS(
+						db.OSType(osStr),
+					)
+				}
 
+				if err != nil {
+					http.Error(
+						w,
+						err.Error(),
+						http.StatusInternalServerError,
+					)
+					return
+				}
 
-			if err := json.NewEncoder(w).Encode(flashers); err != nil {
-				http.Error(
-					w,
-					err.Error(),
-					http.StatusInternalServerError,
+				if flashers == nil {
+					flashers = []db.FlasherRecord{}
+				}
+
+				w.Header().Set(
+					"Content-Type",
+					"application/json",
 				)
-				return
-			}
+
+				if err := json.NewEncoder(w).Encode(flashers); err != nil {
+					http.Error(
+						w,
+						err.Error(),
+						http.StatusInternalServerError,
+					)
+					return
+				}
 
 
 		default:

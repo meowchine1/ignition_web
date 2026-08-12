@@ -87,12 +87,11 @@ import (
  
 	mux.HandleFunc("/api/firmwares", handlers.HandleFirmwares(cfg, repo))  // GET
 	mux.HandleFunc("/api/firmware", handlers.HandleFirmware(cfg, repo))	   // POST
-	mux.HandleFunc("/api/firmware/", handlers.HandleFirmware(cfg, repo))   // GET DELETE
+	mux.HandleFunc("/api/firmware/", handlers.HandleFirmware(cfg, repo))   // GET DELETE PATCH
 
 	mux.HandleFunc("/api/flashers", handlers.HandleFlashers(cfg, repo))   // GET
 	mux.HandleFunc("/api/flasher", handlers.HandleFlasher(cfg, repo))	  // POST
-	mux.HandleFunc("/api/flasher/", handlers.HandleFlasher(cfg, repo))	  // GET DELETE
-	mux.HandleFunc("/api/flasher/current", handlers.HandleCurrentFlasher(cfg, repo)) // GET
+	mux.HandleFunc("/api/flasher/", handlers.HandleFlasher(cfg, repo))	  // GET DELETE PATCH
 
 	fmt.Printf("IgnitionFlash Admin running on %s\n", cfg.ListenAddr)
 

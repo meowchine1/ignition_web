@@ -53,25 +53,13 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				r,
 				firmware.Path,
 			)
-
-
+ 
 		case http.MethodPost:
 
 			if err := r.ParseMultipartForm(10 << 20); err != nil {
 				http.Error(
 					w,
 					"bad form",
-					http.StatusBadRequest,
-				)
-				return
-			}
-
-			version := r.FormValue("version")
-
-			if version == "" {
-				http.Error(
-					w,
-					"version required",
 					http.StatusBadRequest,
 				)
 				return
@@ -120,12 +108,31 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 				return
 			}
 
-			originalName := filepath.Base(header.Filename)
+			now := time.Now()
 
-			filename := filepath.Base(header.Filename) + ".enc"
+			originalName := filepath.Base(header.Filename)
+			filename := originalName + ".enc"
+
+			// Создаем имя папки по времени:
+			// DD-MM-YY-HH-MM-SS
+			dirName := now.Format("02-01-06-15-04-05")
+
+			saveDir := filepath.Join(
+				cfg.FirmwaresDir,
+				dirName,
+			)
+
+			if err := os.MkdirAll(saveDir, 0755); err != nil {
+				http.Error(
+					w,
+					"failed to create firmware directory",
+					http.StatusInternalServerError,
+				)
+				return
+			}
 
 			savePath := filepath.Join(
-				cfg.FirmwaresDir,
+				saveDir,
 				filename,
 			)
 
@@ -139,16 +146,20 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 			}
 
 			record := db.FirmwareRecord{
-				Path: savePath,
-				Version: version,
-				CreatedAt: time.Now(),
-				SHA256: sha256sum,
-				IsCurrent: false,
-				Size: int64(len(encrypted)),
-				Name: originalName,
+				Path:      savePath,
+				CreatedAt: now,
+				SHA256:    sha256sum,
+				IsAvailable : false,
+				Size:      int64(len(encrypted)),
+				Name:      originalName,
 			}
 
 			if err := repo.AddFirmware(record); err != nil {
+				// Если запись в БД не добавилась,
+				// удаляем уже сохраненный файл.
+				_ = os.Remove(savePath)
+				_ = os.Remove(saveDir)
+
 				http.Error(
 					w,
 					err.Error(),
@@ -159,16 +170,25 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 
 			log.Printf(
 				"[%s] uploaded %s (%d -> %d bytes)",
-				time.Now().Format("15:04:05"),
+				now.Format("15:04:05"),
 				header.Filename,
 				len(raw),
 				len(encrypted),
 			)
 
+			w.Header().Set(
+				"Content-Type",
+				"application/json",
+			)
+
+			w.WriteHeader(http.StatusCreated)
+
 			json.NewEncoder(w).Encode(map[string]any{
 				"ok":   true,
 				"file": filename,
+				"path": savePath,
 			})
+
 
 		case http.MethodDelete:
 
@@ -205,6 +225,51 @@ func HandleFirmware(cfg *config.Config, repo db.Repository) http.HandlerFunc {
 			_ = os.Remove(firmware.Path)
 
 			w.WriteHeader(http.StatusNoContent)
+		
+		case http.MethodPatch:
+
+			id, err := getIDFromQuery(r)
+
+			if err != nil {
+				http.Error(
+					w,
+					"bad id",
+					http.StatusBadRequest,
+				)
+				return
+			}
+
+			var request struct {
+				Available bool `json:"available"`
+			}
+
+			if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+				http.Error(
+					w,
+					"bad request",
+					http.StatusBadRequest,
+				)
+				return
+			}
+
+			if request.Available {
+				err = repo.EnableFirmware(id)
+			} else {
+				err = repo.DisableFirmware(id)
+			}
+
+			if err != nil {
+				http.Error(
+					w,
+					err.Error(),
+					http.StatusInternalServerError,
+				)
+				return
+			}
+
+			w.WriteHeader(http.StatusNoContent)
+			
+
 
 		default:
 

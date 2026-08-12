@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "embed"
 	"time"
+	//"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -105,8 +106,8 @@ func (r *SQLiteRepository) ClearCurrentFirmware() error {
 	_, err := r.conn.Exec(
 		`
 		UPDATE firmware
-		SET is_current = 0
-		WHERE is_current = 1
+		SET is_available = 0
+		WHERE is_available = 1
 		`,
 	)
 
@@ -128,39 +129,30 @@ func (r *SQLiteRepository) UpdateFirmware(f FirmwareRecord) error {
 	return err
 }
 
-func (r *SQLiteRepository) SetCurrentFirmware(id int64) error {
-	tx, err := r.conn.Begin()
-	if err != nil {
-		return err
-	}
-
-	defer tx.Rollback()
-
-	_, err = tx.Exec(
+func (r *SQLiteRepository) EnableFirmware(id int64) error {
+	_, err := r.conn.Exec(
 		`
 		UPDATE firmware
-		SET is_current = 0
-		`,
-	)
-
-	if err != nil {
-		return err
-	}
-
-	_, err = tx.Exec(
-		`
-		UPDATE firmware
-		SET is_current = 1
+		SET is_available = 1
 		WHERE id = ?
 		`,
 		id,
 	)
 
-	if err != nil {
-		return err
-	}
+	return err
+}
 
-	return tx.Commit()
+func (r *SQLiteRepository) DisableFirmware(id int64) error {
+	_, err := r.conn.Exec(
+		`
+		UPDATE firmware
+		SET is_available = 0
+		WHERE id = ?
+		`,
+		id,
+	)
+
+	return err
 }
 
 func (r *SQLiteRepository) GetFirmware(id int64) (*FirmwareRecord, error) {
@@ -171,8 +163,7 @@ func (r *SQLiteRepository) GetFirmware(id int64) (*FirmwareRecord, error) {
 		SELECT
 			id,
 			name,
-			size,
-			version,
+			size, 
 			sha256,
 			path,
 			created_at
@@ -183,8 +174,7 @@ func (r *SQLiteRepository) GetFirmware(id int64) (*FirmwareRecord, error) {
 	).Scan(
 		&f.ID,
 		&f.Name,
-		&f.Size,
-		&f.Version,
+		&f.Size, 
 		&f.SHA256,
 		&f.Path,
 		&f.CreatedAt,
@@ -195,46 +185,7 @@ func (r *SQLiteRepository) GetFirmware(id int64) (*FirmwareRecord, error) {
 	}
 
 	return &f, nil
-}
-
-func (r *SQLiteRepository) GetCurrentFirmware() (*FirmwareRecord, error) {
-	var f FirmwareRecord
-	var current int
-
-	err := r.conn.QueryRow(
-		`
-		SELECT
-			id,
-			name,
-			size,
-			version,
-			sha256,
-			path,
-			is_current,
-			created_at
-		FROM firmware
-		WHERE is_current = 1
-		LIMIT 1
-		`,
-	).Scan(
-		&f.ID,
-		&f.Name,
-		&f.Size,
-		&f.Version,
-		&f.SHA256,
-		&f.Path,
-		&current,
-		&f.CreatedAt,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	f.IsCurrent = current == 1
-
-	return &f, nil
-}
+} 
 
 func (r *SQLiteRepository) AddFirmware(f FirmwareRecord) error {
 
@@ -243,20 +194,20 @@ func (r *SQLiteRepository) AddFirmware(f FirmwareRecord) error {
 		INSERT INTO firmware
 		(
 			name,
-			size,
-			version,
+			size, 
 			sha256,
 			path,
-			is_current
+			is_available,
+			created_at
 		)
 		VALUES (?, ?, ?, ?, ?, ?)
 		`,
 		f.Name,
-		f.Size,
-		f.Version,
+		f.Size, 
 		f.SHA256,
 		f.Path,
-		boolToInt(f.IsCurrent),
+		boolToInt(f.IsAvailable),
+		f.CreatedAt.Format(time.RFC3339),
 	) 
 	return err
 }
@@ -280,11 +231,10 @@ func (r *SQLiteRepository) ListFirmwares() ([]FirmwareRecord, error) {
 		SELECT
 			id,
 			name,
-			size,
-			version,
+			size, 
 			sha256,
 			path,
-			is_current,
+			is_available,
 			created_at
 		FROM firmware
 		ORDER BY created_at DESC
@@ -301,16 +251,15 @@ func (r *SQLiteRepository) ListFirmwares() ([]FirmwareRecord, error) {
 	for rows.Next() {
 
 		var f FirmwareRecord
-		var current int
+		var avaliable int
  
 		err := rows.Scan(
 			&f.ID,
 			&f.Name,
-			&f.Size,
-			&f.Version,
+			&f.Size, 
 			&f.SHA256,
 			&f.Path,
-			&current,
+			&avaliable,
 			&f.CreatedAt,
 		)
 
@@ -318,7 +267,7 @@ func (r *SQLiteRepository) ListFirmwares() ([]FirmwareRecord, error) {
 			return nil, err
 		}
  
-		f.IsCurrent = current == 1
+		f.IsAvailable = avaliable == 1
 
 		result = append(result, f)
 	}
@@ -328,7 +277,64 @@ func (r *SQLiteRepository) ListFirmwares() ([]FirmwareRecord, error) {
 	} 
 	return result, nil
 }
- 
+
+func (r *SQLiteRepository) ListAvailableFirmwares() ([]FirmwareRecord, error) {
+
+	rows, err := r.conn.Query(
+		`
+		SELECT
+			id,
+			name,
+			size,
+			sha256,
+			path,
+			is_available,
+			created_at
+		FROM firmware
+		WHERE is_available = 1
+		ORDER BY created_at DESC
+		`,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var result []FirmwareRecord
+
+	for rows.Next() {
+
+		var f FirmwareRecord
+		var available int
+
+		err := rows.Scan(
+			&f.ID,
+			&f.Name,
+			&f.Size,
+			&f.SHA256,
+			&f.Path,
+			&available,
+			&f.CreatedAt,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		f.IsAvailable = available == 1
+
+		result = append(result, f)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
 // =========================
 // Flasher
 // =========================
@@ -371,7 +377,7 @@ func (r *SQLiteRepository) SetCurrentFlasher(id int64, os OSType) error {
 	return tx.Commit()
 }
 
-func (r *SQLiteRepository) ClearCurrentFlasher(os OSType) error {
+func (r *SQLiteRepository) UnsetCurrentFlasher(os OSType) error {
 
 	_, err := r.conn.Exec(
 		`
@@ -410,8 +416,7 @@ func (r *SQLiteRepository) GetFlasher(id int64) (*FlasherRecord, error) {
 		SELECT
 			id,
 			name,
-			os,
-			version,
+			os, 
 			size,
 			sha256,
 			path,
@@ -424,8 +429,7 @@ func (r *SQLiteRepository) GetFlasher(id int64) (*FlasherRecord, error) {
 	).Scan(
 		&f.ID,
 		&f.Name,
-		&f.OS,
-		&f.Version,
+		&f.OS, 
 		&f.Size,
 		&f.SHA256,
 		&f.Path,
@@ -444,15 +448,14 @@ func (r *SQLiteRepository) GetFlasher(id int64) (*FlasherRecord, error) {
 
 func (r *SQLiteRepository) GetCurrentFlasher(osType OSType) (*FlasherRecord, error) {
 	var f FlasherRecord
-	var current int
+	var current int 
 
 	err := r.conn.QueryRow(
 		`
 		SELECT
 			id,
 			name,
-			os,
-			version,
+			os, 
 			size,
 			sha256,
 			path,
@@ -467,8 +470,7 @@ func (r *SQLiteRepository) GetCurrentFlasher(osType OSType) (*FlasherRecord, err
 	).Scan(
 		&f.ID,
 		&f.Name,
-		&f.OS,
-		&f.Version,
+		&f.OS, 
 		&f.Size,
 		&f.SHA256,
 		&f.Path,
@@ -493,25 +495,26 @@ func (r *SQLiteRepository) AddFlasher(f FlasherRecord) error {
 		(
 			name,
 			os,
-			version,
 			size,
 			sha256,
 			path,
-			is_current
+			is_current,
+			created_at
 		)
 		VALUES (?, ?, ?, ?, ?, ?, ?)
 		`,
 		f.Name,
 		f.OS,
-		f.Version,
 		f.Size,
 		f.SHA256,
 		f.Path,
 		boolToInt(f.IsCurrent),
-	) 
+		f.CreatedAt.Format(time.RFC3339),
+	)
+
 	return err
 }
- 
+
 func (r *SQLiteRepository) DeleteFlasher(id int64) error {
 
 	_, err := r.conn.Exec(
@@ -523,7 +526,66 @@ func (r *SQLiteRepository) DeleteFlasher(id int64) error {
 	) 
 	return err
 }
+
+func (r *SQLiteRepository) ListFlashersByOS(os OSType) ([]FlasherRecord, error){
+	
+	rows, err := r.conn.Query(
+	`
+	SELECT
+		id,
+		name,
+		os,
+		size,
+		sha256,
+		path,
+		is_current,
+		created_at
+	FROM flasher
+	WHERE os = ?
+	ORDER BY created_at DESC
+	`,
+	os,
+)
  
+	if err != nil {
+		return nil, err
+	}
+ 
+	defer rows.Close() 
+	var result []FlasherRecord 
+	for rows.Next() {
+
+		var f FlasherRecord
+		var current int
+ 
+		err := rows.Scan(
+			&f.ID,
+			&f.Name,
+			&f.OS, 
+			&f.Size,
+			&f.SHA256,
+			&f.Path,
+			&current,
+			&f.CreatedAt,
+		)
+ 
+		if err != nil {
+			return nil, err
+		}
+ 
+		f.IsCurrent = current == 1
+ 
+		result = append(result, f)
+	}
+ 
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+ 
+	return result, nil
+
+}
+
 func (r *SQLiteRepository) ListFlashers() ([]FlasherRecord, error) {
 
 	rows, err := r.conn.Query(
@@ -531,8 +593,7 @@ func (r *SQLiteRepository) ListFlashers() ([]FlasherRecord, error) {
 		SELECT
 			id,
 			name,
-			os,
-			version,
+			os, 
 			size,
 			sha256,
 			path,
@@ -557,8 +618,7 @@ func (r *SQLiteRepository) ListFlashers() ([]FlasherRecord, error) {
 		err := rows.Scan(
 			&f.ID,
 			&f.Name,
-			&f.OS,
-			&f.Version,
+			&f.OS, 
 			&f.Size,
 			&f.SHA256,
 			&f.Path,
