@@ -1,4 +1,4 @@
-package handlers
+package services
 
 import (
 	"crypto/aes"
@@ -6,11 +6,9 @@ import (
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
-	"encoding/binary" 
-	"flasher/config" 
-	"net/http" 
+	"encoding/binary"
 	"encoding/hex"
-	"strconv"
+	"flasher/config"
 )
 
 func computeHMAC(data []byte, cfg *config.Config) []byte {
@@ -19,16 +17,10 @@ func computeHMAC(data []byte, cfg *config.Config) []byte {
 	return h.Sum(nil)
 }
 
-func getIDFromPath(r *http.Request) (int64, error) {
-    return strconv.ParseInt(r.PathValue("id"), 10, 64)
-}
-
-
 func calculateSHA256(data []byte) string {
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:])
 }
-
 
 func encryptAndSign(fw []byte, cfg *config.Config) ([]byte, error) {
 	iv := make([]byte, 16)
@@ -61,10 +53,3 @@ func encryptAndSign(fw []byte, cfg *config.Config) ([]byte, error) {
 
 	return result, nil
 }
-
-func checkAdmin(r *http.Request, cfg *config.Config) bool {
-	token := r.Header.Get("X-Admin-Token")
-	return token != "" && token == cfg.AdminToken
-}
-
- 

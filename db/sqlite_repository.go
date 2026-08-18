@@ -700,6 +700,112 @@ func (r *SQLiteRepository) FirmwareExists(filename string) (bool, error) {
 	return exists, nil
 }
 
+// =========================
+// Users
+// =========================
+
+func (r *SQLiteRepository) CreateUser(u User) (int64, error) {
+	res, err := r.conn.Exec(
+		`
+		INSERT INTO users
+		(
+			username,
+			password_hash,
+			role,
+			created_at
+		)
+		VALUES (?, ?, ?, ?)
+		`,
+		u.Username,
+		u.PasswordHash,
+		u.Role,
+		u.CreatedAt.Format(time.RFC3339),
+	)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.LastInsertId()
+}
+
+func (r *SQLiteRepository) GetUserByUsername(username string) (User, error) {
+	var u User
+
+	err := r.conn.QueryRow(
+		`
+		SELECT
+			id,
+			username,
+			password_hash,
+			role,
+			created_at
+		FROM users
+		WHERE username = ?
+		`,
+		username,
+	).Scan(
+		&u.ID,
+		&u.Username,
+		&u.PasswordHash,
+		&u.Role,
+		&u.CreatedAt,
+	)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return u, nil
+}
+
+func (r *SQLiteRepository) GetUserByID(id int64) (User, error) {
+	var u User
+	err := r.conn.QueryRow(
+		`
+		SELECT
+			id,
+			username,
+			password_hash,
+			role,
+			created_at
+		FROM users
+		WHERE id = ?
+		`,
+		id,
+	).Scan(
+		&u.ID,
+		&u.Username,
+		&u.PasswordHash,
+		&u.Role,
+		&u.CreatedAt,
+	)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return u, nil
+}
+
+func (r *SQLiteRepository) CountUsersByRole(role Role) (int, error) {
+	var count int
+
+	err := r.conn.QueryRow(
+		`
+		SELECT COUNT(*)
+		FROM users
+		WHERE role = ?
+		`,
+		role,
+	).Scan(&count)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func (r *SQLiteRepository) FlasherExists(filename string) (bool, error) {
 	var exists bool
 

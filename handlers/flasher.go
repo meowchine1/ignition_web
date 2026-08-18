@@ -24,7 +24,7 @@ func flasherPathID(r *http.Request) (int64, error) {
 
 // GET /api/flashers?os=...  — admin only, полный список (с фильтром по os)
 func (h *FlasherHandler) List(w http.ResponseWriter, r *http.Request) { 
-	osName := r.PathValue("os")
+	osName := r.URL.Query().Get("os")
 
     if osName == "" {
         http.Error(w, "os is required", http.StatusBadRequest)
@@ -42,7 +42,7 @@ func (h *FlasherHandler) List(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/flashers/current?os=...  — доступно роли user (и admin)
 func (h *FlasherHandler) Current(w http.ResponseWriter, r *http.Request) { 
-	osName := r.PathValue("os")
+	osName := r.URL.Query().Get("os")
 
     if osName == "" {
         http.Error(w, "os is required", http.StatusBadRequest)

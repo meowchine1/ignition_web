@@ -1,8 +1,6 @@
 package services
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"flasher/config"
 	"flasher/db"
 	"fmt"
@@ -50,18 +48,22 @@ func (s *FirmwareService) ListAvailable() ([]db.FirmwareRecord, error) {
 }
 
 func (s *FirmwareService) Get(id int) (db.FirmwareRecord, error) {
-	return s.repo.GetFirmware(id)
+	fw, err := s.repo.GetFirmware(int64(id))
+	if err != nil {
+		return db.FirmwareRecord{}, err
+	}
+	return *fw, nil
 }
 
 func (s *FirmwareService) GetAvailable(id int) (db.FirmwareRecord, error) {
-	fw, err := s.repo.GetFirmware(id)
+	fw, err := s.repo.GetFirmware(int64(id))
 	if err != nil {
 		return db.FirmwareRecord{}, err
 	}
 	if !fw.IsAvailable {
 		return db.FirmwareRecord{}, fmt.Errorf("firmware is not available")
 	}
-	return fw, nil
+	return *fw, nil
 }
 
 // ---------- запись ----------
@@ -124,18 +126,18 @@ func (s *FirmwareService) Create(originalName string, raw []byte) (db.FirmwareRe
 
 func (s *FirmwareService) SetAvailable(id int, available bool) error {
 	if available {
-		return s.repo.EnableFirmware(id)
+		return s.repo.EnableFirmware(int64(id))
 	}
-	return s.repo.DisableFirmware(id)
+	return s.repo.DisableFirmware(int64(id))
 }
 
 func (s *FirmwareService) Delete(id int) error {
-	firmware, err := s.repo.GetFirmware(id)
+	firmware, err := s.repo.GetFirmware(int64(id))
 	if err != nil {
 		return err
 	}
 
-	if err := s.repo.DeleteFirmware(id); err != nil {
+	if err := s.repo.DeleteFirmware(int64(id)); err != nil {
 		return err
 	}
 
@@ -144,18 +146,3 @@ func (s *FirmwareService) Delete(id int) error {
 	return nil
 }
 
-// ---------- вспомогательные ----------
-// calculateSHA256 и encryptAndSign в присланном фрагменте не были определены
-// (видимо, лежали в другом файле пакета handlers). calculateSHA256 ниже —
-// стандартная реализация; тело encryptAndSign перенесите из старого кода как есть.
-
-func calculateSHA256(data []byte) string {
-	sum := sha256.Sum256(data)
-	return hex.EncodeToString(sum[:])
-}
-
-func encryptAndSign(data []byte, cfg *config.Config) ([]byte, error) {
-	// TODO: перенести сюда реальную реализацию шифрования/подписи из старого
-	// файла handlers — её тело не вошло в присланный фрагмент.
-	panic("encryptAndSign: перенесите реализацию из старого кода")
-}

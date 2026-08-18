@@ -44,11 +44,19 @@ func (s *FlasherService) List(osType string) ([]db.FlasherRecord, error) {
 // Current — сохраняет старое поведение HandleFlasher(GET ?os=...):
 // вернуть текущий (актуальный) флешер под указанную ОС.
 func (s *FlasherService) Current(osType string) (db.FlasherRecord, error) {
-	return s.repo.GetCurrentFlasher(db.OSType(osType))
+	flasher, err := s.repo.GetCurrentFlasher(db.OSType(osType))
+	if err != nil {
+		return db.FlasherRecord{}, err
+	}
+	return *flasher, nil
 }
 
 func (s *FlasherService) Get(id int64) (db.FlasherRecord, error) {
-	return s.repo.GetFlasher(id)
+	flasher, err := s.repo.GetFlasher(id)
+	if err != nil {
+		return db.FlasherRecord{}, err
+	}
+	return *flasher, nil
 }
 
 // ---------- запись ----------
