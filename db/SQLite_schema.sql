@@ -39,3 +39,11 @@ ON flasher(os);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_flasher_os_current
 ON flasher(os)
 WHERE is_current = 1;
+
+CREATE TABLE IF NOT EXISTS users (
+	id            INTEGER PRIMARY KEY AUTOINCREMENT,
+	username      TEXT NOT NULL UNIQUE,
+	password_hash TEXT NOT NULL,
+	role          TEXT NOT NULL CHECK (role IN ('user','admin')),
+	created_at    DATETIME NOT NULL
+);

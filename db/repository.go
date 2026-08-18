@@ -34,4 +34,9 @@ type Repository interface {
 	CountFirmwares() (int, error)
 	CountFlashers() (int, error)
 
+	CreateUser(u User) (int64, error)
+	GetUserByUsername(username string) (User, error)
+	GetUserByID(id int64) (User, error)
+	CountUsersByRole(role Role) (int, error)
+
 }

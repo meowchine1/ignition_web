@@ -462,7 +462,7 @@ async function loadFirmwares() {
           '<td>' +
             '<div class="fw-actions">' +
 
-              '<a class="btn-action" href="/api/firmware?id=' + fw.ID + '" download>' +
+              '<a class="btn-action" href="/api/firmware/' + fw.ID + '" download>' +
                 '&#x2193; DOWNLOAD' +
               '</a>' +
 
@@ -511,7 +511,7 @@ async function deleteFirmware(id) {
   if (!confirm('Delete firmware with ID ' + id + '?')) return;
 
   try {
-    const res = await fetch('/api/firmware?id=' + id, {
+    const res = await fetch('/api/firmware/' + id, {
       method: 'DELETE'
     });
 
@@ -755,7 +755,7 @@ const selector =
 
               currentAction +
 
-              '<a class="btn-action" href="/api/flasher?id=' +
+              '<a class="btn-action" href="/api/flasher/' +
                 fl.ID +
                 '" download>' +
                 '&#x2193; DOWNLOAD' +
@@ -814,7 +814,7 @@ async function setCurrentFlasher(id, os) {
 
   try {
 
-    const res = await fetch('/api/flasher?id=' + id, {
+    const res = await fetch('/api/flasher/' + id, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json'
@@ -846,7 +846,7 @@ async function setCurrentFlasher(id, os) {
     if (!confirm('Delete flasher with ID ' + id + '?')) return;
 
     try {
-      const res = await fetch('/api/flasher?id=' + id, {
+      const res = await fetch('/api/flasher/' + id, {
         method: 'DELETE'
       });
 
@@ -879,7 +879,7 @@ async function toggleFirmwareAvailability(id, available) {
 
   try {
 
-    const res = await fetch('/api/firmware?id=' + id, {
+    const res = await fetch('/api/firmware/' + id, {
       method: 'PATCH',
 
       headers: {

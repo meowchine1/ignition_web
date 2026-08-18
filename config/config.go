@@ -7,6 +7,10 @@ type Config struct {
 	AdminToken   string
 	AESKey       []byte
 	HMACKey      []byte
+
+	JWTSecret      string
+	AdminUsername  string // из env, для bootstrap
+	AdminPassword  string // из env, для bootstrap
 }
 
 func Load() (*Config, error) {

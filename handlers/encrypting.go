@@ -19,15 +19,8 @@ func computeHMAC(data []byte, cfg *config.Config) []byte {
 	return h.Sum(nil)
 }
 
-func getIDFromQuery(r *http.Request) (int64, error) {
-	idStr := r.URL.Query().Get("id")
-
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
+func getIDFromPath(r *http.Request) (int64, error) {
+    return strconv.ParseInt(r.PathValue("id"), 10, 64)
 }
 
 

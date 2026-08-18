@@ -32,3 +32,18 @@ type FlasherRecord struct {
 	IsCurrent bool
 	CreatedAt time.Time
 }
+
+type Role string
+
+const (
+	RoleUser  Role = "user"
+	RoleAdmin Role = "admin"
+)
+
+type User struct {
+	ID           int64     `json:"id"`
+	Username     string    `json:"username"`
+	PasswordHash string    `json:"-"`  
+	Role         Role      `json:"role"`
+	CreatedAt    time.Time `json:"created_at"`
+}
