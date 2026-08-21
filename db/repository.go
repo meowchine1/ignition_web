@@ -38,5 +38,8 @@ type Repository interface {
 	GetUserByUsername(username string) (User, error)
 	GetUserByID(id int64) (User, error)
 	CountUsersByRole(role Role) (int, error)
+	ListUsers() ([]User, error)
+	UpdateUser(u User) error
+	DeleteUser(id int64) error
 
 }

@@ -1,0 +1,302 @@
+/* ══════════════════════════════════════════
+   LOGIN / REGISTER — same design system as admin.css
+   Uses CSS variables defined in base.css (:root)
+══════════════════════════════════════════ */
+
+.login-viewport {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.login-grid {
+  width: 100%;
+  max-width: 940px;
+  display: grid;
+  grid-template-columns: 0.95fr 1fr;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.5),
+    0 0 0 1px rgba(255,107,0,.04);
+}
+
+/* corner brackets, matches the site's cyber-panel language */
+.login-grid::before,
+.login-grid::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--spark);
+  opacity: .6;
+  z-index: 2;
+}
+.login-grid::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.login-grid::after   { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+/* ── Brand panel ── */
+.login-brand {
+  position: relative;
+  padding: 56px 48px;
+  background: linear-gradient(160deg, var(--dark), var(--panel));
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.login-brand-glow {
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(ellipse, rgba(255,107,0,.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-brand-icon {
+  width: 56px;
+  height: 56px;
+  margin-bottom: 28px;
+  filter: drop-shadow(0 0 14px rgba(255,107,0,.4));
+  position: relative;
+}
+
+.login-brand-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #fff;
+  text-transform: uppercase;
+  line-height: 1.1;
+  position: relative;
+}
+.login-brand-title span { color: var(--spark); }
+
+.login-brand-sub {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 44px;
+  position: relative;
+}
+
+.login-feature-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.login-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--steel);
+}
+
+.login-feature-icon {
+  color: var(--spark);
+  font-size: 13px;
+  flex-shrink: 0;
+  text-shadow: 0 0 8px rgba(255,107,0,.5);
+}
+
+.login-brand-status {
+  width: fit-content;
+  position: relative;
+  margin-top: auto;
+}
+
+/* ── Auth panel ── */
+.login-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 44px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 340px;
+}
+
+.login-tabs {
+  position: relative;
+  display: flex;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.login-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0 0 14px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--dim);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color .2s;
+}
+
+.login-tab.active { color: var(--spark); }
+.login-tab:hover:not(.active) { color: var(--steel); }
+
+.login-tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 50%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--spark3), var(--spark2));
+  box-shadow: 0 0 8px var(--spark);
+  transition: transform .25s ease;
+}
+.login-tab-indicator.right { transform: translateX(100%); }
+
+.login-form {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+}
+.login-form.show { display: flex; }
+
+.login-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-field .auth-input { width: 100%; }
+
+.login-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--steel);
+  text-transform: uppercase;
+}
+
+.login-password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-password-wrap .auth-input { padding-right: 44px; }
+
+.login-eye {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--dim);
+  cursor: pointer;
+  padding: 4px;
+  line-height: 0;
+  transition: color .2s;
+}
+.login-eye svg { width: 17px; height: 17px; }
+.login-eye:hover  { color: var(--steel); }
+.login-eye.active { color: var(--spark2); }
+
+.login-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -6px;
+}
+
+.login-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.login-remember input {
+  width: 13px;
+  height: 13px;
+  accent-color: var(--spark);
+}
+
+.login-forgot {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 1px;
+  color: var(--dim);
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color .2s;
+}
+.login-forgot:hover { color: var(--spark2); }
+
+.login-submit {
+  margin-bottom: 0;
+  margin-top: 6px;
+}
+
+.login-switch {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--dim);
+}
+
+.login-switch button {
+  background: none;
+  border: none;
+  color: var(--spark);
+  cursor: pointer;
+  font: inherit;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color .2s;
+}
+.login-switch button:hover { color: var(--spark2); }
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .login-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .login-brand { display: none; }
+  .login-panel { padding: 44px 32px; }
+}
+
+@media (max-width: 480px) {
+  .login-viewport { padding: 24px 16px; }
+  .login-panel { padding: 36px 24px; }
+}

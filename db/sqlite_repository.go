@@ -806,6 +806,75 @@ func (r *SQLiteRepository) CountUsersByRole(role Role) (int, error) {
 	return count, nil
 }
 
+func (r *SQLiteRepository) ListUsers() ([]User, error) {
+	rows, err := r.conn.Query(
+		`
+		SELECT
+			id,
+			username,
+			password_hash,
+			role,
+			created_at
+		FROM users
+		ORDER BY created_at DESC
+		`,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []User
+	for rows.Next() {
+		var u User
+		if err := rows.Scan(
+			&u.ID,
+			&u.Username,
+			&u.PasswordHash,
+			&u.Role,
+			&u.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		result = append(result, u)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (r *SQLiteRepository) UpdateUser(u User) error {
+	_, err := r.conn.Exec(
+		`
+		UPDATE users
+		SET
+			username = ?,
+			password_hash = ?,
+			role = ?
+		WHERE id = ?
+		`,
+		u.Username,
+		u.PasswordHash,
+		u.Role,
+		u.ID,
+	)
+	return err
+}
+
+func (r *SQLiteRepository) DeleteUser(id int64) error {
+	_, err := r.conn.Exec(
+		`
+		DELETE FROM users
+		WHERE id = ?
+		`,
+		id,
+	)
+	return err
+}
+
 func (r *SQLiteRepository) FlasherExists(filename string) (bool, error) {
 	var exists bool
 

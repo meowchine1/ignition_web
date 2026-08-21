@@ -1,0 +1,159 @@
+{{ define "styles" }}
+<link rel="stylesheet" href="css/login.css">
+{{ end }}
+
+{{ define "content" }}
+
+<div class="login-viewport">
+
+  <div class="login-grid">
+
+    <!-- ── Brand / info panel ── -->
+    <div class="login-brand">
+
+      <div class="login-brand-glow"></div>
+
+      <div class="login-brand-icon">
+        <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M28 4 L48 16 L48 40 L28 52 L8 40 L8 16 Z"
+                stroke="#ff6b00" stroke-width="2" opacity=".4"/>
+          <path d="M28 16 L20 28 L26 28 L24 40 L36 26 L29 26 L32 16 Z"
+                fill="#ff6b00"/>
+        </svg>
+      </div>
+
+      <div class="login-brand-title">SECURE<span> ACCESS</span></div>
+      <div class="login-brand-sub">FIRMWARE COMMAND CENTER</div>
+
+      <ul class="login-feature-list">
+        <li><span class="login-feature-icon">⬡</span> AES-128-CTR encryption at rest</li>
+        <li><span class="login-feature-icon">⬡</span> HMAC-SHA256 integrity verification</li>
+        <li><span class="login-feature-icon">⬡</span> Signed firmware &amp; flasher vault</li>
+      </ul>
+
+      <div class="status-badge login-brand-status">
+        <span class="status-dot"></span>
+        ENCRYPTED CONNECTION
+      </div>
+
+    </div>
+
+    <!-- ── Auth panel ── -->
+    <div class="login-panel">
+
+      <div class="login-card">
+
+        <div class="login-tabs">
+          <button class="login-tab active" id="tab-login" type="button" onclick="switchTab('login')">Login</button>
+          <button class="login-tab" id="tab-register" type="button" onclick="switchTab('register')">Register</button>
+          <div class="login-tab-indicator" id="tab-indicator"></div>
+        </div>
+
+        <!-- Login form -->
+        <form class="login-form show" id="form-login" onsubmit="return false;">
+
+          <div class="login-field">
+            <label class="login-label">Username</label>
+            <input class="auth-input" type="text" placeholder="enter your username" autocomplete="username">
+          </div>
+
+          <div class="login-field">
+            <label class="login-label">Password</label>
+            <div class="login-password-wrap">
+              <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="login-eye" onclick="togglePassword('login-password', this)">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6Z" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="login-row">
+            <label class="login-remember">
+              <input type="checkbox">
+              <span>Remember this device</span>
+            </label>
+            <a class="login-forgot" href="#">Forgot password?</a>
+          </div>
+
+          <button class="btn-upload login-submit" type="submit">
+            <span>⬡ &nbsp;SIGN IN</span>
+          </button>
+
+        </form>
+
+        <!-- Register form -->
+        <form class="login-form" id="form-register" onsubmit="return false;">
+
+          <div class="login-field">
+            <label class="login-label">Username</label>
+            <input class="auth-input" type="text" placeholder="choose a username" autocomplete="username">
+          </div>
+
+          <div class="login-field">
+            <label class="login-label">Email</label>
+            <input class="auth-input" type="email" placeholder="you@company.com" autocomplete="email">
+          </div>
+
+          <div class="login-field">
+            <label class="login-label">Password</label>
+            <div class="login-password-wrap">
+              <input class="auth-input" type="password" id="reg-password" placeholder="min. 12 characters" autocomplete="new-password">
+              <button type="button" class="login-eye" onclick="togglePassword('reg-password', this)">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6Z" stroke="currentColor" stroke-width="1.4"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="login-field">
+            <label class="login-label">Confirm password</label>
+            <input class="auth-input" type="password" placeholder="repeat password" autocomplete="new-password">
+          </div>
+
+          <button class="btn-upload login-submit" type="submit">
+            <span>⬡ &nbsp;CREATE ACCOUNT</span>
+          </button>
+
+        </form>
+
+        <div class="login-switch">
+          <span id="switch-text">Don't have an account?</span>
+          <button type="button" id="switch-btn" onclick="switchTab('register')">Register</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+
+    document.getElementById('tab-login').classList.toggle('active', isLogin);
+    document.getElementById('tab-register').classList.toggle('active', !isLogin);
+    document.getElementById('tab-indicator').classList.toggle('right', !isLogin);
+
+    document.getElementById('form-login').classList.toggle('show', isLogin);
+    document.getElementById('form-register').classList.toggle('show', !isLogin);
+
+    document.getElementById('switch-text').textContent = isLogin
+      ? "Don't have an account?"
+      : 'Already have an account?';
+
+    const switchBtn = document.getElementById('switch-btn');
+    switchBtn.textContent = isLogin ? 'Register' : 'Login';
+    switchBtn.onclick = function () { switchTab(isLogin ? 'register' : 'login'); };
+  }
+
+  function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.classList.toggle('active', show);
+  }
+</script>
+
+{{ end }}

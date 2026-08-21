@@ -1,0 +1,20 @@
+# Секреты и локальные данные
+.env
+.env_example
+database.sqlite3
+firmwares/
+flashers/
+
+# Git
+.git
+.gitignore
+
+# Сборка и артефакты
+*.exe
+*.log
+server
+run.bat
+
+# IDE
+.idea/
+.vscode/
