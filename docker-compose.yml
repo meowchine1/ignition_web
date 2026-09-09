@@ -19,15 +19,15 @@ services:
     env_file:
       - .env
     environment:
-      # Внутри контейнера БД и данные лежат в /app/data
       FIRMWARES_DIR: /app/data/firmwares
       FLASHERS_DIR: /app/data/flashers
       DB_DIR: /app/data/db
       LISTEN_ADDR: 0.0.0.0:8200
     volumes:
-      # Persistent volumes для БД и файлов
-      - db_data:/app/data
-      # Секреты передаются через env_file (.env), не через volumes
+      # Прямое монтирование локальных файлов/папок
+      - ./database.sqlite3:/app/data/db/database.sqlite3
+      - ./firmwares:/app/data/firmwares
+      - ./flashers:/app/data/flashers
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8200/"]
       interval: 30s
@@ -35,6 +35,3 @@ services:
       retries: 3
       start_period: 10s
 
-volumes:
-  db_data:
-    name: ignition-flasher-data

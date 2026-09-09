@@ -35,7 +35,7 @@ COPY --from=builder /app/server /app/server
 COPY --from=builder /app/ui /app/ui
 
 # Директории для данных
-RUN mkdir -p /app/data /app/firmwares /app/flashers \
+RUN mkdir -p /app/data/db /app/data/firmwares /app/data/flashers \
     && chown -R app:app /app
 
 # Переключаемся на непривилегированного пользователя
